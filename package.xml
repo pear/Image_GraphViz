@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<package>
+<!DOCTYPE package SYSTEM "../package.dtd">
+<package version="1.0">
   <name>Image_GraphViz</name>
   <summary>The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&amp;T's GraphViz tools.</summary>
-  <maintainer>
-    <user>sebastian</user>
-    <name>Sebastian Bergmann</name>
-    <email>sb@sebastian-bergmann.de</email>
-  </maintainer>
+  <maintainers>
+    <maintainer>
+      <user>sebastian</user>
+      <name>Sebastian Bergmann</name>
+      <email>sb@sebastian-bergmann.de</email>
+    </maintainer>
+  </maintainers>
   <release>
-   <version>0.1</version>
-   <date>2001-12-01</date>
-   <notes><![CDATA[First release.]]>
+    <version>0.1</version>
+    <date>2001-12-01</date>
+    <notes><![CDATA[First release.]]>
    </notes>
-  </release>
-  <filelist>
-    <dir name="/" baseinstalldir="Image">
+    <filelist>
+      <dir name="/" baseinstalldir="Image">
         <file role="php">Image_GraphViz.php</file>
-    </dir>
-  </filelist>
+      </dir>
+    </filelist>
+  </release>
 </package>
