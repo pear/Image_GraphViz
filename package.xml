@@ -7,7 +7,12 @@
     <name>Sebastian Bergmann</name>
     <email>sb@sebastian-bergmann.de</email>
   </maintainer>
-
+  <release>
+   <version>0.1</version>
+   <date>2001-12-01</date>
+   <notes><![CDATA[First release.]]>
+   </notes>
+  </release>
   <filelist>
     <dir name="/" baseinstalldir="Image">
         <file role="php">Image_GraphViz.php</file>
