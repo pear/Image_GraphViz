@@ -112,7 +112,7 @@ class Image_GraphViz {
             header('Content-Type: image/' . $format);
             header('Content-Length: ' . filesize($outputfile));
 
-            $fp = fopen($outputfile, "rb");
+            $fp = fopen($outputfile, 'rb');
 
             if ($fp) {
                 echo fread($fp, filesize($outputfile));
@@ -161,14 +161,20 @@ class Image_GraphViz {
             if (!isset($this->graph['edges'][$id])) {
                 $this->graph['edges'][$id] = $edge;
             } else {
-                $this->graph['edges'][$id] = array_merge($this->graph['edges'][$id], $edge);
+                $this->graph['edges'][$id] = array_merge(
+                  $this->graph['edges'][$id],
+                  $edge
+                );
             }
 
             if (is_array($attributes)) {
                 if (!isset($this->graph['edge_attributes'][$id])) {
                     $this->graph['edge_attributes'][$id] = $attributes;
                 } else {
-                    $this->graph['edge_attributes'][$id] = array_merge($this->graph['edge_attributes'][$id], $attributes);
+                    $this->graph['edge_attributes'][$id] = array_merge(
+                      $this->graph['edge_attributes'][$id],
+                      $attributes
+                    );
                 }
             }
         }
@@ -204,7 +210,10 @@ class Image_GraphViz {
     */
     function add_attributes($attributes) {
         if (is_array($attributes)) {
-            $this->graph['attributes'] = array_merge($this->graph['attributes'], $attributes);
+            $this->graph['attributes'] = array_merge(
+              $this->graph['attributes'],
+              $attributes
+            );
         }
     }
 
@@ -296,11 +305,11 @@ class Image_GraphViz {
                 }
 
                 if (!empty($attribute_list)) {
-                  $parsed_graph .= '"' .
-                                   addslashes(stripslashes($node)) .
-                                   '" [ ' .
-                                   implode(',', $attribute_list) .
-                                   " ];\n";
+                    $parsed_graph .= sprintf(
+                      "\"%s\" [ %s ];\n",
+                      addslashes(stripslashes($node)),
+                      implode(',', $attribute_list)
+                    );
                 }
             }
         }
@@ -316,21 +325,24 @@ class Image_GraphViz {
                     $attribute_list[] = $key . '="' . $value . '"';
                 }
 
+                $parsed_graph .= sprintf(
+                  '"%s" -> "%s"',
+                  addslashes(stripslashes($from)),
+                  addslashes(stripslashes($to))
+                );
+                
                 if (!empty($attribute_list)) {
-                  $parsed_graph .= '"' .
-                                   addslashes(stripslashes($from)) .
-                                   '" -> "' .
-                                   addslashes(stripslashes($to)) .
-                                   '" [ ' .
-                                   implode(',', $attribute_list) .
-                                   " ];\n";
+                    $parsed_graph .= sprintf(
+                      ' [ %s ]',
+                      implode(',', $attribute_list)
+                    );
                 }
+
+                $parsed_graph .= ';';
             }
         }
 
-        $parsed_graph .= ' }';
-
-        return $parsed_graph;
+        return $parsed_graph . ' }';
     }
 
     /**

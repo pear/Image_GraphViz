@@ -19,19 +19,14 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>0.2</version>
-    <date>2002-04-06</date>
+    <version>0.3</version>
+    <date>2002-XX-XX</date>
     <notes>
-     <![CDATA[
-      * Added escaping of node descriptions.
-        (Patch by Garvin Hicking <hicking@faktor-e.de>)
-
-      * Improved compatibility with Win32 version of dot/neato.
-        (Patch by Garvin Hicking <hicking@faktor-e.de>)
-
-      * Changed Image_GraphViz.php to Image/GraphViz.php.
-     ]]>
-   </notes>
+<![CDATA[
+* Allow for edges without attributes.
+  (Patch by Carsten Saathoff <kodemaniak@gmx.de>)
+]]>
+    </notes>
     <filelist>
       <dir name="/" baseinstalldir="Image">
         <file role="php" name="GraphViz.php"/>
@@ -40,9 +35,28 @@
   </release>
   <changelog>
     <release>
+      <version>0.2</version>
+      <date>2002-04-06</date>
+      <notes>
+<![CDATA[
+* Added escaping of node descriptions.
+  (Patch by Garvin Hicking <hicking@faktor-e.de>)
+
+* Improved compatibility with Win32 version of dot/neato.
+  (Patch by Garvin Hicking <hicking@faktor-e.de>)
+
+* Changed Image_GraphViz.php to Image/GraphViz.php.
+]]>
+      </notes>
+    </release>
+    <release>
       <version>0.1</version>
       <date>2001-12-01</date>
-      <notes><![CDATA[First release.]]></notes>
+      <notes>
+<![CDATA[
+First release.
+]]>
+      </notes>
     </release>
   </changelog>
 </package>
