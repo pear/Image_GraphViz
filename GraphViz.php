@@ -295,7 +295,7 @@ class Image_GraphViz {
     * @access public
     */
     function parse() {
-        $parsedGraph = "digraph G { \n";
+        $parsedGraph = "digraph G {\n";
 
         if (isset($this->graph['attributes'])) {
             foreach ($this->graph['attributes'] as $key => $value) {
@@ -303,7 +303,7 @@ class Image_GraphViz {
             }
 
             if (!empty($attributeList)) {
-              $parsedGraph .= implode(',', $attributeList) . '; ';
+              $parsedGraph .= implode(',', $attributeList) . ";\n";
             }
         }
 
