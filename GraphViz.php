@@ -106,10 +106,14 @@ class Image_GraphViz {
 
             switch ($format) {
                 case 'gif':
-                case 'jpg':
                 case 'png':
                 case 'wbmp': {
                     header('Content-Type: image/' . $format);
+                }
+                break;
+
+                case 'jpg': {
+                    header('Content-Type: iamge/jpeg');
                 }
                 break;
 
