@@ -19,15 +19,12 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.0.2</version>
-    <date>2004-02-20</date>
+    <version>1.0.3</version>
+    <date>2004-02-25</date>
     <state>stable</state>
     <notes>
 <![CDATA[
-* Fixed Content-Type header for SVG images.
-
-* Improved temporary file creation by using
-  System::mktemp() instead of tempnam().
+* Fixed bugs #109 and #852.
 ]]>
     </notes>
     <filelist>
@@ -37,6 +34,19 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>1.0.2</version>
+      <date>2004-02-20</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
+* Fixed Content-Type header for SVG images.
+
+* Improved temporary file creation by using
+  System::mktemp() instead of tempnam().
+]]>
+      </notes>
+    </release>
     <release>
       <version>1.0.1</version>
       <date>2002-12-11</date>

@@ -16,7 +16,7 @@
 // $Id$
 //
 
-require_once 'PEAR/System.php';
+require_once 'System.php';
 
 /**
 * PEAR::Image_GraphViz
@@ -106,6 +106,8 @@ class Image_GraphViz {
             @`$command`;
             @unlink($file);
 
+            $sendContentLengthHeader = true;
+
             switch ($format) {
                 case 'gif':
                 case 'png':
@@ -128,9 +130,15 @@ class Image_GraphViz {
                     header('Content-Type: image/svg+xml');
                 }
                 break;
+
+                default: {
+                    $sendContentLengthHeader = false;
+                }
             }
 
-            header('Content-Length: ' . filesize($outputfile));
+            if ($sendContentLengthHeader) {
+                header('Content-Length: ' . filesize($outputfile));
+            }
 
             $fp = fopen($outputfile, 'rb');
 
