@@ -349,11 +349,11 @@ class Image_GraphViz {
                     );
                 }
 
-                $parsedGraph .= ';';
+                $parsedGraph .= ";\n";
             }
         }
 
-        return $parsedGraph . ' }';
+        return $parsedGraph . "}\n";
     }
 
     /**
