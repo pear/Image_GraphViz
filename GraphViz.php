@@ -110,6 +110,8 @@ class Image_GraphViz {
             @unlink($file);
 
             header('Content-Type: image/' . $format);
+            header('Content-Length: ' . filesize($outputfile));
+
             $fp = fopen($outputfile, "rb");
 
             if ($fp) {
