@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<package>
+  <name>Image_GraphViz</name>
+  <summary>The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&amp;T's GraphViz tools.</summary>
+  <maintainer>
+    <user>sebastian</user>
+    <name>Sebastian Bergmann</name>
+    <email>sebastian@php.net</email>
+  </maintainer>
+
+  <filelist>
+    <dir name="/" baseinstalldir="Image">
+        <file role="php">Image_GraphViz.php</file>
+    </dir>
+  </filelist>
+</package>
