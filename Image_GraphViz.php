@@ -20,17 +20,85 @@
 // $Id$
 //
 
+/**
+* PEAR::Image_GraphViz
+*
+* Purpose
+*
+*     Allows for the creation of and the work with directed
+*     and undirected graphs and their visualization with
+*     AT&T's GraphViz tools. These can be found at
+*     http://www.research.att.com/sw/tools/graphviz/
+*
+* Example
+*
+*     require_once 'Image/Image_GraphViz.php';
+*     $graph = new GraphViz();
+*
+*     $graph->add_node('Node1', array('URL'      => 'http://link1',
+*                                     'label'    => 'This is a label',
+*                                     'shape'    => 'box'
+*                                    )
+*                     );
+*     $graph->add_node('Node2', array('URL'      => 'http://link2',
+*                                     'fontsize' => '14'
+*                                    )
+*                     );
+*     $graph->add_node('Node3', array('URL'      => 'http://link3',
+*                                     'fontsize' => '20'
+*                                    )
+*                     );
+*
+*     $graph->add_edge(array('Node1' => 'Node2'), array('label' => 'Edge Label'));
+*     $graph->add_edge(array('Node1' => 'Node2'), array('color' => 'red'));
+*
+*     $graph->image();
+*
+* @author  Sebastian Bergmann <sb@sebastian-bergmann.de>
+*          Dr. Volker Göbbels <vmg@arachnion.de>
+* @package Image
+*/
 class Image_GraphViz {
+    /**
+    * Path to GraphViz/dot command
+    *
+    * @var  string
+    */
     var $dot_command   = '/path/to/dot';
+
+    /**
+    * Path to GraphViz/neato command
+    *
+    * @var  string
+    */
     var $neato_command = '/path/to/neato';
 
+    /**
+    * Representation of the graph
+    *
+    * @var  array
+    */
     var $graph;
 
+    /**
+    * Constructor
+    *
+    * @param  boolean Directed (true) or undirected (false) graph.
+    * @param  array   Attributes of the graph
+    * @access public
+    */
     function Image_GraphViz($directed = true, $attributes = array()) {
         $this->set_directed($directed);
         $this->set_attributes($attributes);
     }
 
+    /**
+    * Output image of the graph in a given format.
+    *
+    * @param  string  Format of the output image.
+    *                 This may be one of the formats supported by GraphViz.
+    * @access public
+    */
     function image($format = 'svg') {
         if ($file = $this->save_parsed_graph()) {
             $command  = $this->graph['directed'] ? $this->dot_command : $this->neato_command;
@@ -44,16 +112,36 @@ class Image_GraphViz {
         }
     }
 
+    /**
+    * Add a note to the graph.
+    *
+    * @param  string  Name of the node.
+    * @param  array   Attributes of the node.
+    * @access public
+    */
     function add_node($name, $attributes = array()) {
         $this->graph['nodes'][$name] = $attributes;
     }
 
+    /**
+    * Remove a node from the graph.
+    *
+    * @param  Name of the node to be removed.
+    * @access public
+    */
     function remove_node($name) {
         if (isset($this->graph['nodes'][$name])) {
             unset($this->graph['nodes'][$name]);
         }
     }
 
+    /**
+    * Add an edge to the graph.
+    *
+    * @param  array Start and End node of the edge.
+    * @param  array Attributes of the edge.
+    * @access public
+    */
     function add_edge($edge, $attributes = array()) {
         if (is_array($edge)) {
             $from = key($edge);
@@ -76,6 +164,12 @@ class Image_GraphViz {
         }
     }
 
+    /**
+    * Remove an edge from the graph.
+    *
+    * @param  array Start and End node of the edge to be removed.
+    * @access public
+    */
     function remove_edge($edge) {
         if (is_array($edge)) {
               $from = key($edge);
@@ -92,30 +186,61 @@ class Image_GraphViz {
         }
     }
 
+    /**
+    * Add attributes to the graph.
+    *
+    * @param  array Attributes to be added to the graph.
+    * @access public
+    */
     function add_attributes($attributes) {
         if (is_array($attributes)) {
             $this->graph['attributes'] = array_merge($this->graph['attributes'], $attributes);
         }
     }
 
+    /**
+    * Set attributes of the graph.
+    *
+    * @param  array Attributes to be set for the graph.
+    * @access public
+    */
     function set_attributes($attributes) {
         if (is_array($attributes)) {
             $this->graph['attributes'] = $attributes;
         }
     }
 
+    /**
+    * Set directed/undirected flag for the graph.
+    *
+    * @param  boolean Directed (true) or undirected (false) graph.
+    * @access public
+    */
     function set_directed($directed) {
         if (is_bool($directed)) {
             $this->graph['directed'] = $directed;
         }
     }
 
+    /**
+    * Load graph from file.
+    *
+    * @param  string  File to load graph from.
+    * @access public
+    */
     function load($file) {
         if ($serialized_graph = implode('', @file($file))) {
             $this->graph = unserialize($serialized_graph);
         }
     }
 
+    /**
+    * Save graph to file.
+    *
+    * @param  string  File to save the graph to.
+    * @return mixed   File the graph was saved to, false on failure.
+    * @access public
+    */
     function save($file = '') {
         $serialized_graph = serialize($this->graph);
 
@@ -133,6 +258,12 @@ class Image_GraphViz {
         return false;
     }
 
+    /**
+    * Parse the graph into GraphViz markup.
+    *
+    * @return string  GraphViz markup
+    * @access public
+    */
     function parse() {
         $parsed_graph = 'digraph G { ';
 
@@ -182,6 +313,14 @@ class Image_GraphViz {
         return $parsed_graph;
     }
 
+    /**
+    * Save GraphViz markup to file.
+    *
+    * @param  string  File to write the GraphViz markup to.
+    * @return mixed   File to which the GraphViz markup was
+    *                 written, false on failure.
+    * @access public
+    */
     function save_parsed_graph($file = '') {
         $parsed_graph = $this->parse();
 
