@@ -19,12 +19,13 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.0</version>
-    <date>2002-12-08</date>
-    <state>stable</state>
+    <version>1.0.1</version>
+    <date>XXXX-XX-XX</date>
+    <state>devel</state>
     <notes>
 <![CDATA[
-* Added some missing newline characters in GraphViz markup.
++ Nodes can be grouped now by passing a group name as 3rd parameter
+  to the addNode() method.
 ]]>
     </notes>
     <filelist>
@@ -34,6 +35,16 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>1.0</version>
+      <date>2002-12-08</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
+* Added some missing newline characters in GraphViz markup.
+]]>
+      </notes>
+    </release>
     <release>
       <version>0.4</version>
       <date>2002-11-24</date>

@@ -138,10 +138,11 @@ class Image_GraphViz {
     *
     * @param  string  Name of the node.
     * @param  array   Attributes of the node.
+    * @param  string  Group of the node.
     * @access public
     */
-    function addNode($name, $attributes = array()) {
-        $this->graph['nodes'][$name] = $attributes;
+    function addNode($name, $attributes = array(), $group = 'default') {
+        $this->graph['nodes'][$group][$name] = $attributes;
     }
 
     /**
@@ -150,9 +151,9 @@ class Image_GraphViz {
     * @param  Name of the node to be removed.
     * @access public
     */
-    function removeNode($name) {
-        if (isset($this->graph['nodes'][$name])) {
-            unset($this->graph['nodes'][$name]);
+    function removeNode($name, $group = 'default') {
+        if (isset($this->graph['nodes'][$group][$name])) {
+            unset($this->graph['nodes'][$group][$name]);
         }
     }
 
@@ -308,19 +309,21 @@ class Image_GraphViz {
         }
 
         if (isset($this->graph['nodes'])) {
-            foreach($this->graph['nodes'] as $node => $attributes) {
-                unset($attributeList);
+            foreach($this->graph['nodes'] as $group) {
+                foreach($group as $node => $attributes) {
+                    unset($attributeList);
 
-                foreach($attributes as $key => $value) {
-                    $attributeList[] = $key . '="' . $value . '"';
-                }
+                    foreach($attributes as $key => $value) {
+                        $attributeList[] = $key . '="' . $value . '"';
+                    }
 
-                if (!empty($attributeList)) {
-                    $parsedGraph .= sprintf(
-                      "\"%s\" [ %s ];\n",
-                      addslashes(stripslashes($node)),
-                      implode(',', $attributeList)
-                    );
+                    if (!empty($attributeList)) {
+                        $parsedGraph .= sprintf(
+                          "\"%s\" [ %s ];\n",
+                          addslashes(stripslashes($node)),
+                          implode(',', $attributeList)
+                        );
+                    }
                 }
             }
         }
