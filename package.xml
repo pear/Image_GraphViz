@@ -17,6 +17,7 @@
       <email>sb@sebastian-bergmann.de</email>
     </maintainer>
   </maintainers>
+  <license>PHP License</license>
   <release>
     <version>0.2</version>
     <date>2002-04-06</date>
