@@ -108,7 +108,6 @@ class Image_GraphViz {
                 case 'gif':
                 case 'jpg':
                 case 'png':
-                case 'svg':
                 case 'wbmp': {
                     header('Content-Type: image/' . $format);
                 }
@@ -116,6 +115,11 @@ class Image_GraphViz {
 
                 case 'pdf': {
                     header('Content-Type: application/pdf');
+                }
+                break;
+
+                case 'svg': {
+                    header('Content-Type: image/svg+xml');
                 }
                 break;
             }

@@ -19,16 +19,12 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.0.1</version>
-    <date>2002-12-11</date>
+    <version>1.0.2</version>
+    <date>200X-XX-XX</date>
     <state>stable</state>
     <notes>
 <![CDATA[
-+ Nodes can be grouped now by passing a group name as 3rd parameter
-  to the addNode() method.
-
-+ The new addCluster() method can be used to give a label to a
-  group of nodes and let GraphViz treat it as a node cluster.
+* Fixed Content-Type header for SVG images.
 ]]>
     </notes>
     <filelist>
@@ -37,6 +33,21 @@
       </dir>
     </filelist>
   </release>
+  <changelog>
+    <release>
+      <version>1.0.1</version>
+      <date>2002-12-11</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
++ Nodes can be grouped now by passing a group name as 3rd parameter
+  to the addNode() method.
+
++ The new addCluster() method can be used to give a label to a
+  group of nodes and let GraphViz treat it as a node cluster.
+]]>
+      </notes>
+    </release>
   <changelog>
     <release>
       <version>1.0</version>
