@@ -95,7 +95,6 @@ class Image_GraphViz {
     *                 This may be one of the formats supported by GraphViz.
     * @access public
     */
-
     function image($format = 'svg') {
         if ($file = $this->saveParsedGraph()) {
             $outputfile = $file . '.' . $format;
