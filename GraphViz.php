@@ -16,6 +16,8 @@
 // $Id$
 //
 
+require_once 'PEAR/System.php';
+
 /**
 * PEAR::Image_GraphViz
 *
@@ -403,7 +405,7 @@ class Image_GraphViz {
 
         if (!empty($parsedGraph)) {
             if (empty($file)) {
-                $file = tempnam('/tmp', 'graph_');
+                $file = System::mktemp('Image_GraphViz');
             }
 
             if ($fp = @fopen($file, 'w')) {

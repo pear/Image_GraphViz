@@ -20,11 +20,14 @@
   <license>PHP License</license>
   <release>
     <version>1.0.2</version>
-    <date>200X-XX-XX</date>
+    <date>2004-02-20</date>
     <state>stable</state>
     <notes>
 <![CDATA[
 * Fixed Content-Type header for SVG images.
+
+* Improved temporary file creation by using
+  System::mktemp() instead of tempnam().
 ]]>
     </notes>
     <filelist>
