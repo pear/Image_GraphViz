@@ -19,15 +19,12 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>0.4</version>
-    <date>2002-11-24</date>
+    <version>1.0</version>
+    <date>2002-12-08</date>
     <state>stable</state>
     <notes>
 <![CDATA[
-* Send correct Content-Type in image() header depending on
-  generated format.
-
-* Renamed methods to conform with PEAR standard.
+* Added some missing newline characters in GraphViz markup.
 ]]>
     </notes>
     <filelist>
@@ -37,6 +34,19 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.4</version>
+      <date>2002-11-24</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
+* Send correct Content-Type in image() header depending on
+  generated format.
+
+* Renamed methods to conform with PEAR standard.
+]]>
+      </notes>
+    </release>
     <release>
       <version>0.3</version>
       <date>2002-09-25</date>
