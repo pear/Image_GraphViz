@@ -33,7 +33,7 @@
    </notes>
     <filelist>
       <dir name="/" baseinstalldir="Image">
-        <file role="php">GraphViz.php</file>
+        <file role="php" name="GraphViz.php"/>
       </dir>
     </filelist>
   </release>
