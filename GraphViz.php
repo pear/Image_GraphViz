@@ -3,7 +3,7 @@
 // +---------------------------------------------------------------------------+
 // | PEAR :: Image :: GraphViz                                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2002-2003 Sebastian Bergmann <sb@sebastian-bergmann.de> and |
+// | Copyright (c) 2002-2004 Sebastian Bergmann <sb@sebastian-bergmann.de> and |
 // |                         Dr. Volker Göbbels <vmg@arachnion.de>.            |
 // +---------------------------------------------------------------------------+
 // | This source file is subject to version 3.00 of the PHP License,           |
