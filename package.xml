@@ -2,13 +2,14 @@
 <!DOCTYPE package SYSTEM "../package.dtd">
 <package version="1.0">
   <name>Image_GraphViz</name>
-  <summary>
+  <summary><![CDATA[Interface to AT&T's GraphViz tools]]></summary>
+  <description>
    <![CDATA[
     The GraphViz class allows for the creation of and the work with 
     directed and undirected graphs and their visualization with 
     AT&T's GraphViz tools.
    ]]>
-  </summary>
+  </description>
   <maintainers>
     <maintainer>
       <user>sebastian</user>
@@ -16,17 +17,6 @@
       <email>sb@sebastian-bergmann.de</email>
     </maintainer>
   </maintainers>
-  <release>
-    <version>0.1</version>
-    <date>2001-12-01</date>
-    <notes><![CDATA[First release.]]>
-   </notes>
-    <filelist>
-      <dir name="/" baseinstalldir="Image">
-        <file role="php">Image_GraphViz.php</file>
-      </dir>
-    </filelist>
-  </release>
   <release>
     <version>0.2</version>
     <date>2002-04-05</date>
@@ -47,4 +37,11 @@
       </dir>
     </filelist>
   </release>
+  <changelog>
+    <release>
+      <version>0.1</version>
+      <date>2001-12-01</date>
+      <notes><![CDATA[First release.]]></notes>
+    </release>
+  </changelog>
 </package>
