@@ -115,7 +115,7 @@ class Image_GraphViz {
                 break;
 
                 case 'jpg': {
-                    header('Content-Type: iamge/jpeg');
+                    header('Content-Type: image/jpeg');
                 }
                 break;
 
