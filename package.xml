@@ -19,13 +19,12 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>0.3</version>
-    <date>2002-09-25</date>
-    <state>stable</state>
+    <version>0.4-dev</version>
+    <date>XXXX-XX-XX</date>
+    <state>devel</state>
     <notes>
 <![CDATA[
-* Allow for edges without attributes.
-  (Patch by Carsten Saathoff <kodemaniak@gmx.de>)
+* Renamed methods to conform with PEAR standard.
 ]]>
     </notes>
     <filelist>
@@ -35,6 +34,17 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.3</version>
+      <date>2002-09-25</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
+* Allow for edges without attributes.
+  (Patch by Carsten Saathoff <kodemaniak@gmx.de>)
+]]>
+      </notes>
+    </release>
     <release>
       <version>0.2</version>
       <date>2002-04-06</date>

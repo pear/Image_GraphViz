@@ -31,22 +31,22 @@
 *     require_once 'Image/GraphViz.php';
 *     $graph = new Image_GraphViz();
 *
-*     $graph->add_node('Node1', array('URL'      => 'http://link1',
-*                                     'label'    => 'This is a label',
-*                                     'shape'    => 'box'
+*     $graph->addNode('Node1', array('URL'      => 'http://link1',
+*                                    'label'    => 'This is a label',
+*                                    'shape'    => 'box'
 *                                    )
 *                     );
-*     $graph->add_node('Node2', array('URL'      => 'http://link2',
-*                                     'fontsize' => '14'
+*     $graph->addNode('Node2', array('URL'      => 'http://link2',
+*                                    'fontsize' => '14'
 *                                    )
 *                     );
-*     $graph->add_node('Node3', array('URL'      => 'http://link3',
-*                                     'fontsize' => '20'
+*     $graph->addNode('Node3', array('URL'      => 'http://link3',
+*                                    'fontsize' => '20'
 *                                    )
 *                     );
 *
-*     $graph->add_edge(array('Node1' => 'Node2'), array('label' => 'Edge Label'));
-*     $graph->add_edge(array('Node1' => 'Node2'), array('color' => 'red'));
+*     $graph->addEdge(array('Node1' => 'Node2'), array('label' => 'Edge Label'));
+*     $graph->addEdge(array('Node1' => 'Node2'), array('color' => 'red'));
 *
 *     $graph->image();
 *
@@ -60,14 +60,14 @@ class Image_GraphViz {
     *
     * @var  string
     */
-    var $dot_command = '/path/to/dot';
+    var $dotCommand = 'dot';
 
     /**
     * Path to GraphViz/neato command
     *
     * @var  string
     */
-    var $neato_command = '/path/to/neato';
+    var $neatoCommand = 'neato';
 
     /**
     * Representation of the graph
@@ -84,8 +84,8 @@ class Image_GraphViz {
     * @access public
     */
     function Image_GraphViz($directed = true, $attributes = array()) {
-        $this->set_directed($directed);
-        $this->set_attributes($attributes);
+        $this->setDirected($directed);
+        $this->setAttributes($attributes);
     }
 
     /**
@@ -97,9 +97,9 @@ class Image_GraphViz {
     */
 
     function image($format = 'svg') {
-        if ($file = $this->save_parsed_graph()) {
+        if ($file = $this->saveParsedGraph()) {
             $outputfile = $file . '.' . $format;
-            $command  = $this->graph['directed'] ? $this->dot_command : $this->neato_command;
+            $command  = $this->graph['directed'] ? $this->dotCommand : $this->neatoCommand;
             $command .= " -T$format -o$outputfile $file";
 
             @$image = @`$command`;
@@ -125,7 +125,7 @@ class Image_GraphViz {
     * @param  array   Attributes of the node.
     * @access public
     */
-    function add_node($name, $attributes = array()) {
+    function addNode($name, $attributes = array()) {
         $this->graph['nodes'][$name] = $attributes;
     }
 
@@ -135,7 +135,7 @@ class Image_GraphViz {
     * @param  Name of the node to be removed.
     * @access public
     */
-    function remove_node($name) {
+    function removeNode($name) {
         if (isset($this->graph['nodes'][$name])) {
             unset($this->graph['nodes'][$name]);
         }
@@ -148,7 +148,7 @@ class Image_GraphViz {
     * @param  array Attributes of the edge.
     * @access public
     */
-    function add_edge($edge, $attributes = array()) {
+    function addEdge($edge, $attributes = array()) {
         if (is_array($edge)) {
             $from = key($edge);
             $to   = $edge[$from];
@@ -182,7 +182,7 @@ class Image_GraphViz {
     * @param  array Start and End node of the edge to be removed.
     * @access public
     */
-    function remove_edge($edge) {
+    function removeEdge($edge) {
         if (is_array($edge)) {
               $from = key($edge);
               $to   = $edge[$from];
@@ -204,7 +204,7 @@ class Image_GraphViz {
     * @param  array Attributes to be added to the graph.
     * @access public
     */
-    function add_attributes($attributes) {
+    function addAttributes($attributes) {
         if (is_array($attributes)) {
             $this->graph['attributes'] = array_merge(
               $this->graph['attributes'],
@@ -219,7 +219,7 @@ class Image_GraphViz {
     * @param  array Attributes to be set for the graph.
     * @access public
     */
-    function set_attributes($attributes) {
+    function setAttributes($attributes) {
         if (is_array($attributes)) {
             $this->graph['attributes'] = $attributes;
         }
@@ -231,7 +231,7 @@ class Image_GraphViz {
     * @param  boolean Directed (true) or undirected (false) graph.
     * @access public
     */
-    function set_directed($directed) {
+    function setDirected($directed) {
         if (is_bool($directed)) {
             $this->graph['directed'] = $directed;
         }
@@ -349,7 +349,7 @@ class Image_GraphViz {
     *                 written, false on failure.
     * @access public
     */
-    function save_parsed_graph($file = '') {
+    function saveParsedGraph($file = '') {
         $parsed_graph = $this->parse();
 
         if (!empty($parsed_graph)) {
