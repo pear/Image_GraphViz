@@ -13,9 +13,9 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.1.0beta1</version>
-    <date>2004-12-22</date>
-    <state>beta</state>
+    <version>1.1.0</version>
+    <date>2005-01-19</date>
+    <state>stable</state>
     <notes>
 <![CDATA[
 + Added fetch() method that returns the generated image.
