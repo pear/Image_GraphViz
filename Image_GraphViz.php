@@ -26,7 +26,7 @@ class Image_GraphViz {
 
     var $graph;
 
-    function GraphViz($directed = true, $attributes = array()) {
+    function Image_GraphViz($directed = true, $attributes = array()) {
         $this->set_directed($directed);
         $this->set_attributes($attributes);
     }
