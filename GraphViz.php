@@ -296,7 +296,7 @@ class Image_GraphViz {
         $serialized_graph = serialize($this->graph);
 
         if (empty($file)) {
-            $file = tempnam('/tmp', 'graph_');
+            $file = System::mktemp('graph_');
         }
 
         if ($fp = @fopen($file, 'w')) {
@@ -405,7 +405,7 @@ class Image_GraphViz {
 
         if (!empty($parsedGraph)) {
             if (empty($file)) {
-                $file = System::mktemp('Image_GraphViz');
+                $file = System::mktemp('graph_');
             }
 
             if ($fp = @fopen($file, 'w')) {
