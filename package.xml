@@ -19,7 +19,7 @@
   </maintainers>
   <release>
     <version>0.2</version>
-    <date>2002-04-05</date>
+    <date>2002-04-06</date>
     <notes>
      <![CDATA[
       * Added escaping of node descriptions.
