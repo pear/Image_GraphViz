@@ -3,7 +3,7 @@
 // +---------------------------------------------------------------------------+
 // | PEAR :: Image :: GraphViz                                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2002-2004 Sebastian Bergmann <sb@sebastian-bergmann.de> and |
+// | Copyright (c) 2002-2005 Sebastian Bergmann <sb@sebastian-bergmann.de> and |
 // |                         Dr. Volker Göbbels <vmg@arachnion.de>.            |
 // +---------------------------------------------------------------------------+
 // | This source file is subject to version 3.00 of the PHP License,           |
@@ -80,7 +80,7 @@ require_once 'System.php';
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @author    Dr. Volker Göbbels <vmg@arachnion.de>
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
- * @copyright Copyright &copy; 2002-2004 Sebastian Bergmann <sb@sebastian-bergmann.de> and Dr. Volker Göbbels <vmg@arachnion.de>
+ * @copyright Copyright &copy; 2002-2005 Sebastian Bergmann <sb@sebastian-bergmann.de> and Dr. Volker Göbbels <vmg@arachnion.de>
  * @license   http://www.php.net/license/3_0.txt The PHP License, Version 3.0
  * @category  Image
  * @package   Image_GraphViz
