@@ -102,10 +102,25 @@ class Image_GraphViz {
             $command  = $this->graph['directed'] ? $this->dotCommand : $this->neatoCommand;
             $command .= " -T$format -o$outputfile $file";
 
-            @$image = @`$command`;
+            @`$command`;
             @unlink($file);
 
-            header('Content-Type: image/' . $format);
+            switch ($format) {
+                case 'gif':
+                case 'jpg':
+                case 'png':
+                case 'svg':
+                case 'wbmp': {
+                    header('Content-Type: image/' . $format);
+                }
+                break;
+
+                case 'pdf': {
+                    header('Content-Type: application/pdf');
+                }
+                break;
+            }
+
             header('Content-Length: ' . filesize($outputfile));
 
             $fp = fopen($outputfile, 'rb');
@@ -164,11 +179,11 @@ class Image_GraphViz {
             }
 
             if (is_array($attributes)) {
-                if (!isset($this->graph['edge_attributes'][$id])) {
-                    $this->graph['edge_attributes'][$id] = $attributes;
+                if (!isset($this->graph['edgeAttributes'][$id])) {
+                    $this->graph['edgeAttributes'][$id] = $attributes;
                 } else {
-                    $this->graph['edge_attributes'][$id] = array_merge(
-                      $this->graph['edge_attributes'][$id],
+                    $this->graph['edgeAttributes'][$id] = array_merge(
+                      $this->graph['edgeAttributes'][$id],
                       $attributes
                     );
                 }
@@ -192,8 +207,8 @@ class Image_GraphViz {
                 unset($this->graph['edges'][$id]);
             }
 
-            if (isset($this->graph['edge_attributes'][$id])) {
-                unset($this->graph['edge_attributes'][$id]);
+            if (isset($this->graph['edgeAttributes'][$id])) {
+                unset($this->graph['edgeAttributes'][$id]);
             }
         }
     }
@@ -280,31 +295,31 @@ class Image_GraphViz {
     * @access public
     */
     function parse() {
-        $parsed_graph = "digraph G { \n";
+        $parsedGraph = "digraph G { \n";
 
         if (isset($this->graph['attributes'])) {
             foreach ($this->graph['attributes'] as $key => $value) {
-                $attribute_list[] = $key . '="' . $value . '"';
+                $attributeList[] = $key . '="' . $value . '"';
             }
 
-            if (!empty($attribute_list)) {
-              $parsed_graph .= implode(',', $attribute_list) . '; ';
+            if (!empty($attributeList)) {
+              $parsedGraph .= implode(',', $attributeList) . '; ';
             }
         }
 
         if (isset($this->graph['nodes'])) {
             foreach($this->graph['nodes'] as $node => $attributes) {
-                unset($attribute_list);
+                unset($attributeList);
 
                 foreach($attributes as $key => $value) {
-                    $attribute_list[] = $key . '="' . $value . '"';
+                    $attributeList[] = $key . '="' . $value . '"';
                 }
 
-                if (!empty($attribute_list)) {
-                    $parsed_graph .= sprintf(
+                if (!empty($attributeList)) {
+                    $parsedGraph .= sprintf(
                       "\"%s\" [ %s ];\n",
                       addslashes(stripslashes($node)),
-                      implode(',', $attribute_list)
+                      implode(',', $attributeList)
                     );
                 }
             }
@@ -312,33 +327,33 @@ class Image_GraphViz {
 
         if (isset($this->graph['edges'])) {
             foreach($this->graph['edges'] as $label => $node) {
-                unset($attribute_list);
+                unset($attributeList);
 
                 $from = key($node);
                 $to   = $node[$from];
 
-                foreach($this->graph['edge_attributes'][$label] as $key => $value) {
-                    $attribute_list[] = $key . '="' . $value . '"';
+                foreach($this->graph['edgeAttributes'][$label] as $key => $value) {
+                    $attributeList[] = $key . '="' . $value . '"';
                 }
 
-                $parsed_graph .= sprintf(
+                $parsedGraph .= sprintf(
                   '"%s" -> "%s"',
                   addslashes(stripslashes($from)),
                   addslashes(stripslashes($to))
                 );
                 
-                if (!empty($attribute_list)) {
-                    $parsed_graph .= sprintf(
+                if (!empty($attributeList)) {
+                    $parsedGraph .= sprintf(
                       ' [ %s ]',
-                      implode(',', $attribute_list)
+                      implode(',', $attributeList)
                     );
                 }
 
-                $parsed_graph .= ';';
+                $parsedGraph .= ';';
             }
         }
 
-        return $parsed_graph . ' }';
+        return $parsedGraph . ' }';
     }
 
     /**
@@ -350,15 +365,15 @@ class Image_GraphViz {
     * @access public
     */
     function saveParsedGraph($file = '') {
-        $parsed_graph = $this->parse();
+        $parsedGraph = $this->parse();
 
-        if (!empty($parsed_graph)) {
+        if (!empty($parsedGraph)) {
             if (empty($file)) {
                 $file = tempnam('/tmp', 'graph_');
             }
 
             if ($fp = @fopen($file, 'w')) {
-                @fputs($fp, $parsed_graph);
+                @fputs($fp, $parsedGraph);
                 @fclose($fp);
 
                 return $file;

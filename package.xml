@@ -19,11 +19,14 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>0.4-dev</version>
-    <date>XXXX-XX-XX</date>
-    <state>devel</state>
+    <version>0.4</version>
+    <date>2002-11-24</date>
+    <state>stable</state>
     <notes>
 <![CDATA[
+* Send correct Content-Type in image() header depending on
+  generated format.
+
 * Renamed methods to conform with PEAR standard.
 ]]>
     </notes>
