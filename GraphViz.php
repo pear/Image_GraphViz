@@ -32,8 +32,8 @@
 *
 * Example
 *
-*     require_once 'Image/Image_GraphViz.php';
-*     $graph = new GraphViz();
+*     require_once 'Image/GraphViz.php';
+*     $graph = new Image_GraphViz();
 *
 *     $graph->add_node('Node1', array('URL'      => 'http://link1',
 *                                     'label'    => 'This is a label',
@@ -99,16 +99,24 @@ class Image_GraphViz {
     *                 This may be one of the formats supported by GraphViz.
     * @access public
     */
+
     function image($format = 'svg') {
         if ($file = $this->save_parsed_graph()) {
+            $outputfile = $file . '.' . $format;
             $command  = $this->graph['directed'] ? $this->dot_command : $this->neato_command;
-            $command .= " -T$format $file";
+            $command .= " -T$format -o$outputfile $file";
 
-            @$image = `$command`;
+            @$image = @`$command`;
             @unlink($file);
 
             header('Content-Type: image/' . $format);
-            echo $image;
+            $fp = fopen($outputfile, "rb");
+
+            if ($fp) {
+                echo fread($fp, filesize($outputfile));
+                fclose($fp);
+                @unlink($outputfile);
+            }
         }
     }
 
@@ -265,7 +273,7 @@ class Image_GraphViz {
     * @access public
     */
     function parse() {
-        $parsed_graph = 'digraph G { ';
+        $parsed_graph = "digraph G { \n";
 
         if (isset($this->graph['attributes'])) {
             foreach ($this->graph['attributes'] as $key => $value) {
@@ -286,7 +294,11 @@ class Image_GraphViz {
                 }
 
                 if (!empty($attribute_list)) {
-                  $parsed_graph .= $node . ' [ ' . implode(',', $attribute_list) . ' ]; ';
+                  $parsed_graph .= '"' .
+                                   addslashes(stripslashes($node)) .
+                                   '" [ ' .
+                                   implode(',', $attribute_list) .
+                                   " ];\n";
                 }
             }
         }
@@ -303,7 +315,13 @@ class Image_GraphViz {
                 }
 
                 if (!empty($attribute_list)) {
-                  $parsed_graph .= $from . ' -> ' . $to . ' [ ' . implode(',', $attribute_list) . ' ];';
+                  $parsed_graph .= '"' .
+                                   addslashes(stripslashes($from)) .
+                                   '" -> "' .
+                                   addslashes(stripslashes($to)) .
+                                   '" [ ' .
+                                   implode(',', $attribute_list) .
+                                   " ];\n";
                 }
             }
         }

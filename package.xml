@@ -2,7 +2,13 @@
 <!DOCTYPE package SYSTEM "../package.dtd">
 <package version="1.0">
   <name>Image_GraphViz</name>
-  <summary>The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&amp;T's GraphViz tools.</summary>
+  <summary>
+   <![CDATA[
+    The GraphViz class allows for the creation of and the work with 
+    directed and undirected graphs and their visualization with 
+    AT&T's GraphViz tools.
+   ]]>
+  </summary>
   <maintainers>
     <maintainer>
       <user>sebastian</user>
@@ -18,6 +24,26 @@
     <filelist>
       <dir name="/" baseinstalldir="Image">
         <file role="php">Image_GraphViz.php</file>
+      </dir>
+    </filelist>
+  </release>
+  <release>
+    <version>0.2</version>
+    <date>2002-04-05</date>
+    <notes>
+     <![CDATA[
+      * Added escaping of node descriptions.
+        (Patch by Garvin Hicking <hicking@faktor-e.de>)
+
+      * Improved compatibility with Win32 version of dot/neato.
+        (Patch by Garvin Hicking <hicking@faktor-e.de>)
+
+      * Changed Image_GraphViz.php to Image/GraphViz.php.
+     ]]>
+   </notes>
+    <filelist>
+      <dir name="/" baseinstalldir="Image">
+        <file role="php">GraphViz.php</file>
       </dir>
     </filelist>
   </release>
