@@ -134,6 +134,17 @@ class Image_GraphViz {
     }
 
     /**
+    * Add a cluster to the graph.
+    *
+    * @param  string  ID.
+    * @param  array   Title.
+    * @access public
+    */
+    function addCluster($id, $title) {
+        $this->graph['clusters'][$id] = $title;
+    }
+
+    /**
     * Add a note to the graph.
     *
     * @param  string  Name of the node.
@@ -309,8 +320,17 @@ class Image_GraphViz {
         }
 
         if (isset($this->graph['nodes'])) {
-            foreach($this->graph['nodes'] as $group) {
-                foreach($group as $node => $attributes) {
+            foreach($this->graph['nodes'] as $group => $nodes) {
+                if ($group != 'default') {
+                  $parsedGraph .= sprintf(
+                    "subgraph \"cluster_%s\" {\nlabel=\"%s\";\n",
+
+                    $group,
+                    isset($this->graph['clusters'][$group]) ? $this->graph['clusters'][$group] : ''
+                  );
+                }
+
+                foreach($nodes as $node => $attributes) {
                     unset($attributeList);
 
                     foreach($attributes as $key => $value) {
@@ -324,6 +344,10 @@ class Image_GraphViz {
                           implode(',', $attributeList)
                         );
                     }
+                }
+
+                if ($group != 'default') {
+                  $parsedGraph .= "}\n";
                 }
             }
         }
