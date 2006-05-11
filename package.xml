@@ -10,13 +10,36 @@
       <name>Dr. Volker G&ouml;bbels</name>
       <email>vmg@arachnion.de</email>
     </maintainer>
+    <maintainer>
+      <user>sebastian</user>
+      <name>Sebastian Bergmann</name>
+      <email>sb@sebastian-bergmann.de</email>
+    </maintainer>
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.1.0</version>
-    <date>2005-01-19</date>
+    <version>1.2.0</version>
+    <date>2006-05-11</date>
     <state>stable</state>
     <notes>
+<![CDATA[
++ Added renderDotFile() method that renders an existing DOT file.
+]]>
+    </notes>
+    <filelist>
+      <dir name="/" baseinstalldir="Image">
+        <file name="GraphViz.php">
+        <replace type="package-info" from="@package_version@" to="version"/>
+        </file>
+      </dir>
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>1.1.0</version>
+      <date>2005-01-19</date>
+      <state>stable</state>
+      <notes>
 <![CDATA[
 + Added fetch() method that returns the generated image.
 
@@ -26,14 +49,8 @@
 
 * Fixed a bug with graph attributes.
 ]]>
-    </notes>
-    <filelist>
-      <dir name="/" baseinstalldir="Image">
-        <file role="php" name="GraphViz.php"/>
-      </dir>
-    </filelist>
-  </release>
-  <changelog>
+      </notes>
+    </release>
     <release>
       <version>1.0.3</version>
       <date>2004-02-25</date>
