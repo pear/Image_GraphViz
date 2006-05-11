@@ -7,7 +7,7 @@
   <maintainers>
     <maintainer>
       <user>vmg</user>
-      <name>Dr. Volker G&ouml;bbels</name>
+      <name>Dr. Volker Göbbels</name>
       <email>vmg@arachnion.de</email>
     </maintainer>
     <maintainer>
@@ -28,7 +28,7 @@
     </notes>
     <filelist>
       <dir name="/" baseinstalldir="Image">
-        <file name="GraphViz.php">
+        <file name="GraphViz.php" role="php">
         <replace type="package-info" from="@package_version@" to="version"/>
         </file>
       </dir>
