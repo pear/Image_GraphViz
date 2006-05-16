@@ -202,7 +202,7 @@ class Image_GraphViz
         if ($file = $this->saveParsedGraph()) {
             $outputfile = $file . '.' . $format;
             $command  = $this->graph['directed'] ? $this->dotCommand : $this->neatoCommand;
-            $command .= ' -T' . escapeshellarg($format) . ' -o'  . escapeshellarg($outputfile) . ' ' . escapeshellarg($dotfile);
+            $command .= ' -T' . escapeshellarg($format) . ' -o'  . escapeshellarg($outputfile) . ' ' . escapeshellarg($file);
     
             @`$command`;
             @unlink($file);
@@ -240,7 +240,6 @@ class Image_GraphViz
             $command .= ' -T' . escapeshellarg($format) . ' -o'  . escapeshellarg($outputfile) . ' ' . escapeshellarg($dotfile);
     
             @`$command`;
-            @unlink($file);
     
             if (file_exists($outputfile) && filemtime($outputfile) > $oldmtime) {
                 return TRUE;
