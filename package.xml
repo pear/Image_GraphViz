@@ -18,12 +18,12 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.2.0</version>
-    <date>2006-05-11</date>
+    <version>1.2.1</version>
+    <date>2006-05-23</date>
     <state>stable</state>
     <notes>
 <![CDATA[
-+ Added renderDotFile() method that renders an existing DOT file.
+* Bugfix release.
 ]]>
     </notes>
     <filelist>
@@ -35,6 +35,16 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>1.2.0</version>
+      <date>2006-05-11</date>
+      <state>stable</state>
+      <notes>
+<![CDATA[
++ Added renderDotFile() method that renders an existing DOT file.
+]]>
+      </notes>
+    </release>
     <release>
       <version>1.1.0</version>
       <date>2005-01-19</date>
