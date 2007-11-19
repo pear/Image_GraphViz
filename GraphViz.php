@@ -4,7 +4,7 @@
 /**
  * Image_GraphViz
  *
- * Copyright (c) 2001-2006, Dr. Volker Göbbels <vmg@arachnion.de> and
+ * Copyright (c) 2001-2007, Dr. Volker Göbbels <vmg@arachnion.de> and
  * Sebastian Bergmann <sb@sebastian-bergmann.de>. All rights reserved.
  *
  * LICENSE: This source file is subject to version 3.0 of the PHP license
@@ -19,19 +19,24 @@
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @author     Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author     Michael Lively Jr. <mlively@ft11.net>
- * @copyright  2001-2006 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @author     Philippe Jausions <Philippe.Jausions@11abacus.com>
+ * @copyright  2001-2007 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Image_GraphViz
+ * @link       http://www.graphviz.org/
  * @since      File available since Release 0.1
  */
 
+/**
+ * Required PEAR classes
+ */
 require_once 'System.php';
 
 /**
  * Interface to AT&T's GraphViz tools.
  *
- * The GraphViz class allows for the creation of and the work with directed
+ * The GraphViz class allows for the creation of and to work with directed
  * and undirected graphs and their visualization with AT&T's GraphViz tools.
  *
  * <code>
@@ -93,14 +98,23 @@ require_once 'System.php';
  * @author    Dr. Volker Göbbels <vmg@arachnion.de>
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author    Michael Lively Jr. <mlively@ft11.net>
- * @copyright Copyright &copy; 2001-2006 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @author    Philippe Jausions <Philippe.Jausions@11abacus.com>
+ * @copyright Copyright &copy; 2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.php.net/license/3_0.txt The PHP License, Version 3.0
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Image_GraphViz
+ * @link      http://www.graphviz.org/
  * @since     Class available since Release 0.1
  */
 class Image_GraphViz
 {
+    /**
+     * Base path to GraphViz commands
+     *
+     * @var string
+     */
+    var $binPath = '';
+
     /**
      * Path to GraphViz/dot command
      *
@@ -120,7 +134,14 @@ class Image_GraphViz
      *
      * @var  array
      */
-    var $graph;
+    var $graph = array('edgesFrom'  => array(),
+                       'nodes'      => array(),
+                       'attributes' => array(),
+                       'directed'   => true,
+                       'clusters'   => array(),
+                       'name'       => 'G',
+                       'strict'     => true,
+                      );
 
     /**
      * Constructor.
@@ -129,15 +150,22 @@ class Image_GraphViz
      * one page. If not set, the graph will be named 'G'.
      *
      * @param  boolean $directed Directed (TRUE) or undirected (FALSE) graph.
+     * Note: You MUST pass a boolean, and not just an expression that evaluates
+     *       to TRUE or FALSE (i.e. NULL, empty string, 0 will not work)
      * @param  array   $attributes Attributes of the graph
      * @param  string  $name Name of the Graph
+     * @param  boolean $strict whether to collapse multiple edges between
+     *                         same nodes
+     *
      * @access public
      */
-    function Image_GraphViz($directed = TRUE, $attributes = array(), $name = NULL)
+    function Image_GraphViz($directed = true, $attributes = array(),
+                            $name = 'G', $strict = true)
     {
         $this->setDirected($directed);
         $this->setAttributes($attributes);
         $this->graph['name'] = $name;
+        $this->graph['strict'] = (boolean)$strict;
     }
 
     /**
@@ -145,39 +173,37 @@ class Image_GraphViz
      *
      * @param  string  Format of the output image.
      *                 This may be one of the formats supported by GraphViz.
+     * @param  string  $command "dot" or "neato"
+     *
      * @access public
      */
-    function image($format = 'svg')
+    function image($format = 'svg', $command = null)
     {
-        if ($data = $this->fetch($format)) {
-            $sendContentLengthHeader = TRUE;
+        if ($data = $this->fetch($format, $command)) {
+            $sendContentLengthHeader = true;
 
             switch ($format) {
                 case 'gif':
                 case 'png':
-                case 'wbmp': {
+                case 'wbmp':
                     header('Content-Type: image/' . $format);
-                }
-                break;
+                    break;
 
-                case 'jpg': {
+                case 'jpg':
+                case 'jpeg':
                     header('Content-Type: image/jpeg');
-                }
-                break;
+                    break;
 
-                case 'pdf': {
+                case 'pdf':
                     header('Content-Type: application/pdf');
-                }
-                break;
+                    break;
 
-                case 'svg': {
+                case 'svg':
                     header('Content-Type: image/svg+xml');
-                }
-                break;
+                    break;
 
-                default: {
-                    $sendContentLengthHeader = FALSE;
-                }
+                default:
+                    $sendContentLengthHeader = false;
             }
 
             if ($sendContentLengthHeader) {
@@ -193,32 +219,48 @@ class Image_GraphViz
      *
      * @param  string  Format of the output image.
      *                 This may be one of the formats supported by GraphViz.
-     * @return string  The image (data) created by GraphViz.
+     * @param  string  $command "dot" or "neato"
+     *
+     * @return string  The image (data) created by GraphViz or FALSE on error
      * @access public
      * @since  Method available since Release 1.1.0
      */
-    function fetch($format = 'svg')
+    function fetch($format = 'svg', $command = null)
     {
-        if ($file = $this->saveParsedGraph()) {
-            $outputfile = $file . '.' . $format;
-            $command  = $this->graph['directed'] ? $this->dotCommand : $this->neatoCommand;
-            $command .= ' -T' . escapeshellarg($format) . ' -o'  . escapeshellarg($outputfile) . ' ' . escapeshellarg($file);
-    
-            @`$command`;
-            @unlink($file);
-    
-            $fp = fopen($outputfile, 'rb');
-    
-            if ($fp) {
-                $data = fread($fp, filesize($outputfile));
-                fclose($fp);
-                @unlink($outputfile);
-            }
-    
-            return $data;
+        $file = $this->saveParsedGraph();
+        if (!$file) {
+            return false;
         }
-    
-        return FALSE;
+
+        $outputfile = $file . '.' . $format;
+
+        switch ($command) {
+            case 'dot':
+            case 'neato':
+                break;
+            default:
+                $command = $this->graph['directed'] ? 'dot' : 'neato';
+        }
+
+        $command = $this->binPath . (($command == 'dot')
+                                   ? $this->dotCommand : $this->neatoCommand);
+        $command .= ' -T'.escapeshellarg($format).' -o'
+                    .escapeshellarg($outputfile).' '.escapeshellarg($file);
+
+        @`$command`;
+        @unlink($file);
+
+        $fp = fopen($outputfile, 'rb');
+
+        if (!$fp) {
+            return false;
+        }
+
+        $data = fread($fp, filesize($outputfile));
+        fclose($fp);
+        @unlink($outputfile);
+
+        return $data;
     }
 
     /**
@@ -228,25 +270,39 @@ class Image_GraphViz
      * @param string The absolute path of the file to save to.
      * @param string Format of the output image.
      *               This may be one of the formats supported by GraphViz.
+     * @param  string  $command "dot" or "neato"
+     *
      * @return bool  True if the file was saved, false otherwise.
      * @access public
      */
-    function renderDotFile($dotfile, $outputfile, $format = 'svg')
+    function renderDotFile($dotfile, $outputfile, $format = 'svg',
+                           $command = null)
     {
         if (file_exists($dotfile)) {
             $oldmtime = file_exists($outputfile) ? filemtime($outputfile) : 0;
 
-            $command  = $this->graph['directed'] ? $this->dotCommand : $this->neatoCommand;
-            $command .= ' -T' . escapeshellarg($format) . ' -o'  . escapeshellarg($outputfile) . ' ' . escapeshellarg($dotfile);
-    
+            switch ($command) {
+                case 'dot':
+                case 'neato':
+                    break;
+                default:
+                    $command = $this->graph['directed'] ? 'dot' : 'neato';
+            }
+
+            $command = $this->binPath . (($command == 'dot')
+                                       ? $this->dotCommand
+                                       : $this->neatoCommand);
+            $command .= ' -T'.escapeshellarg($format)
+                        .' -o'.escapeshellarg($outputfile)
+                        .' '.escapeshellarg($dotfile);
             @`$command`;
-    
+
             if (file_exists($outputfile) && filemtime($outputfile) > $oldmtime) {
-                return TRUE;
+                return true;
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -255,6 +311,8 @@ class Image_GraphViz
      * @param  string  ID.
      * @param  array   Title.
      * @param  array   Attributes of the cluster.
+     *
+     * @return void
      * @access public
      */
     function addCluster($id, $title, $attributes = array())
@@ -269,6 +327,8 @@ class Image_GraphViz
      * @param  string  Name of the node.
      * @param  array   Attributes of the node.
      * @param  string  Group of the node.
+     *
+     * @return void
      * @access public
      */
     function addNode($name, $attributes = array(), $group = 'default')
@@ -279,7 +339,11 @@ class Image_GraphViz
     /**
      * Remove a node from the graph.
      *
+     * This method doesn't remove edges associated with the node.
+     *
      * @param  Name of the node to be removed.
+     *
+     * @return void
      * @access public
      */
     function removeNode($name, $group = 'default')
@@ -292,64 +356,96 @@ class Image_GraphViz
     /**
      * Add an edge to the graph.
      *
-     * Caveat! This cannot handle multiple identical edges. If you use non-numeric
-     * IDs for the nodes, this will not do (too much) harm. For numeric IDs the
-     * array_merge() that is used will change the keys when merging arrays, leading
-     * to new nodes appearing in the graph.
+     * Examples:
+     * <code>
+     * $g->addEdge(array('node1' => 'node2'));
+     * $attr = array(
+     *     'label' => '+1',
+     *     'style' => 'dashed',
+     * );
+     * $g->addEdge(array('node3' => 'node4'), $attr);
      *
-     * @param  array Start and End node of the edge.
+     * // With port specification
+     * $g->addEdge(array('node5' => 'node6'), $attr, array('node6' => 'portA'));
+     * $g->addEdge(array('node7' => 'node8'), null, array('node7' => 'portC',
+     *                                                    'node8' => 'portD'));
+     * </code>
+     *
+     * @param  array Start => End node of the edge.
      * @param  array Attributes of the edge.
+     * @param  array $ports Start node => port, End node => port
+     *
+     * @return integer an edge ID that can be used with {@link removeEdge()}
      * @access public
      */
-    function addEdge($edge, $attributes = array())
+    function addEdge($edge, $attributes = array(), $ports = array())
     {
-        if (is_array($edge)) {
-            $from = key($edge);
-            $to   = $edge[$from];
-            $id   = $from . '_' . $to;
+        if (!is_array($edge)) {
+            return;
+        }
 
-            if (!isset($this->graph['edges'][$id])) {
-                $this->graph['edges'][$id] = $edge;
-            } else {
-                $this->graph['edges'][$id] = array_merge(
-                  $this->graph['edges'][$id],
-                  $edge
-                );
+        $from = key($edge);
+        $to   = $edge[$from];
+        $info = array();
+
+        if (is_array($ports)) {
+            if (array_key_exists($from, $ports)) {
+                $info['portFrom'] = $ports[$from];
             }
 
-            if (is_array($attributes)) {
-                if (!isset($this->graph['edgeAttributes'][$id])) {
-                    $this->graph['edgeAttributes'][$id] = $attributes;
-                } else {
-                    $this->graph['edgeAttributes'][$id] = array_merge(
-                      $this->graph['edgeAttributes'][$id],
-                      $attributes
-                    );
-                }
+            if (array_key_exists($to, $ports)) {
+                $info['portTo'] = $ports[$to];
             }
         }
+
+        if (is_array($attributes)) {
+            $info['attributes'] = $attributes;
+        }
+
+        if (!empty($this->graph['strict'])) {
+            if (!isset($this->graph['edgesFrom'][$from][$to][0])) {
+                $this->graph['edgesFrom'][$from][$to][0] = $info;
+            } else {
+                $this->graph['edgesFrom'][$from][$to][0] = array_merge(
+                  $this->graph['edgesFrom'][$from][$to][0], $info
+                );
+            }
+        } else {
+            $this->graph['edgesFrom'][$from][$to][] = $info;
+        }
+
+        return count($this->graph['edgesFrom'][$from][$to]) - 1;
     }
 
     /**
      * Remove an edge from the graph.
      *
      * @param  array Start and End node of the edge to be removed.
+     * @param  integer $id specific edge ID (only usefull when multiple edges
+     *                     exist between the same 2 nodes)
+     *
+     * @return void
      * @access public
      */
-    function removeEdge($edge)
+    function removeEdge($edge, $id = null)
     {
-        if (is_array($edge)) {
-              $from = key($edge);
-              $to   = $edge[$from];
-              $id   = $from . '_' . $to;
+        if (!is_array($edge)) {
+            return;
+        }
 
-            if (isset($this->graph['edges'][$id])) {
-                unset($this->graph['edges'][$id]);
-            }
+        $from = key($edge);
+        $to   = $edge[$from];
 
-            if (isset($this->graph['edgeAttributes'][$id])) {
-                unset($this->graph['edgeAttributes'][$id]);
+        if (!is_null($id)) {
+            if (isset($this->graph['edgesFrom'][$from][$to][$id])) {
+                unset($this->graph['edgesFrom'][$from][$to][$id]);
+
+                if (count($this->graph['edgesFrom'][$from][$to]) == 0) {
+                    unset($this->graph['edgesFrom'][$from][$to]);
+                }
             }
+        } elseif (isset($this->graph['edgesFrom'][$from][$to])) {
+            unset($this->graph['edgesFrom'][$from][$to]);
         }
     }
 
@@ -357,6 +453,8 @@ class Image_GraphViz
      * Add attributes to the graph.
      *
      * @param  array Attributes to be added to the graph.
+     *
+     * @return void
      * @access public
      */
     function addAttributes($attributes)
@@ -373,6 +471,8 @@ class Image_GraphViz
      * Set attributes of the graph.
      *
      * @param  array Attributes to be set for the graph.
+     *
+     * @return void
      * @access public
      */
     function setAttributes($attributes)
@@ -383,9 +483,85 @@ class Image_GraphViz
     }
 
     /**
+     * Escapes an (attribute) array
+     *
+     * Detects if an attribute is <html>, contains double-quotes, etc...
+     *
+     * @param array $input
+     *
+     * @return array input escaped
+     * @access protected
+     */
+    function _escapeArray($input)
+    {
+        $output = array();
+
+        foreach ((array)$input as $k => $v) {
+            switch ($k) {
+                case 'label':
+                case 'headlabel':
+                case 'taillabel':
+                    $v = $this->_escape($v, true);
+                    break;
+                default:
+                    $v = $this->_escape($v);
+                    $k = $this->_escape($k);
+            }
+
+            $output[$k] = $v;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Returns a safe "ID" in DOT syntax
+     *
+     * @param string $input string to use as "ID"
+     * @param boolean $html whether to attempt detecting HTML-like content
+     *
+     * @return string
+     * @access protected
+     */
+    function _escape($input, $html = false)
+    {
+        switch (strtolower($input)) {
+            case 'node':
+            case 'edge':
+            case 'graph':
+            case 'digraph':
+            case 'subgraph':
+            case 'strict':
+                return '"'.$input.'"';
+        }
+
+        if (is_bool($input)) {
+            return ($input) ? 'true' : 'false';
+        }
+
+        if ($html && (strpos($input, '</') !== false
+                      || strpos($input, '/>') !== false)) {
+            return '<'.$input.'>';
+        }
+
+        if (preg_match('/^([a-z_][a-z_0-9]*|-?(\.[0-9]+|[0-9]+(\.[0-9]*)?))$/i',
+                       $input)) {
+            return $input;
+        }
+
+        return '"'.str_replace(array("\r\n", "\n", "\r", '"'),
+                               array('\n',   '\n', '\n', '\"'), $input).'"';
+    }
+
+    /**
      * Set directed/undirected flag for the graph.
      *
+     * Note: You MUST pass a boolean, and not just an expression that evaluates
+     *       to TRUE or FALSE (i.e. NULL, empty string, 0 will not work)
+     *
      * @param  boolean Directed (TRUE) or undirected (FALSE) graph.
+     *
+     * @return void
      * @access public
      */
     function setDirected($directed)
@@ -399,12 +575,43 @@ class Image_GraphViz
      * Load graph from file.
      *
      * @param  string  File to load graph from.
+     *
+     * @return void
      * @access public
      */
     function load($file)
     {
         if ($serializedGraph = implode('', @file($file))) {
-            $this->graph = unserialize($serializedGraph);
+            $g = unserialize($serializedGraph);
+
+            if (!is_array($g)) {
+                return;
+            }
+
+            // Convert old storage format to new one
+            $defaults = array('edgesFrom'  => array(),
+                              'nodes'      => array(),
+                              'attributes' => array(),
+                              'directed'   => true,
+                              'clusters'   => array(),
+                              'name'       => 'G',
+                              'strict'     => true,
+                        );
+
+            $this->graph = array_merge($defaults, $g);
+
+            if (isset($this->graph['edges'])) {
+                foreach ($this->graph['edges'] as $id => $nodes) {
+                    $attr = (isset($this->graph['edgeAttributes'][$id]))
+                            ? $this->graph['edgeAttributes'][$id]
+                            : array();
+
+                    $this->addEdge($nodes, $attr);
+                }
+
+                unset($this->graph['edges']);
+                unset($this->graph['edgeAttributes']);
+            }
         }
     }
 
@@ -423,14 +630,14 @@ class Image_GraphViz
             $file = System::mktemp('graph_');
         }
 
-        if ($fp = @fopen($file, 'w')) {
+        if ($fp = @fopen($file, 'wb')) {
             @fputs($fp, $serializedGraph);
             @fclose($fp);
 
             return $file;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -441,92 +648,103 @@ class Image_GraphViz
      */
     function parse()
     {
-        if (isset($this->graph['name']) && is_string($this->graph['name'])) {
-            $parsedGraph = "digraph " . $this->graph['name'] . " {\n";
-        } else {
-            $parsedGraph = "digraph G {\n";
+        $parsedGraph = (empty($this->graph['strict'])) ? '' : 'strict ';
+        $parsedGraph .= (empty($this->graph['directed'])) ? 'graph ' : 'digraph ';
+        $parsedGraph .= $this->_escape($this->graph['name'])." {\n";
+
+        $indent = '    ';
+
+        $attr = $this->_escapeArray($this->graph['attributes']);
+
+        foreach ($attr as $key => $value) {
+            $parsedGraph .= $indent.$key.'='.$value.";\n";
         }
 
-        if (isset($this->graph['attributes'])) {
-            foreach ($this->graph['attributes'] as $key => $value) {
-                $attributeList[] = $key . '="' . $value . '"';
-            }
+        foreach ($this->graph['nodes'] as $group => $nodes) {
+            if ($group != 'default') {
+                $parsedGraph .= $indent.'subgraph '.$this->_escape($group)." {\n";
+                $indent .= '    ';
 
-            if (!empty($attributeList)) {
-                $parsedGraph .= 'graph [ '.implode(',', $attributeList) . " ];\n";
-            }
-        }
+                if (isset($this->graph['clusters'][$group])) {
+                    $cluster = $this->graph['clusters'][$group];
+                    $attr = $this->_escapeArray($cluster['attributes']);
 
-        if (isset($this->graph['nodes'])) {
-            foreach($this->graph['nodes'] as $group => $nodes) {
-                if ($group != 'default') {
-                    $parsedGraph .= sprintf(
-                      "subgraph \"cluster_%s\" {\nlabel=\"%s\";\n",
-
-                      $group,
-                      isset($this->graph['clusters'][$group]) ? $this->graph['clusters'][$group]['title'] : ''
-                    );
-
-                    if (isset($this->graph['clusters'][$group]['attributes'])) {
-                        unset($attributeList);
-
-                        foreach ($this->graph['clusters'][$group]['attributes'] as $key => $value) {
-                            $attributeList[] = $key . '="' . $value . '"';
-                        }
-
-                        if (!empty($attributeList)) {
-                            $parsedGraph .= implode(',', $attributeList) . ";\n";
-                        }
-                    }
-                }
-
-                foreach($nodes as $node => $attributes) {
-                    unset($attributeList);
-
-                    foreach($attributes as $key => $value) {
-                        $attributeList[] = $key . '="' . $value . '"';
+                    foreach ($attr as $key => $value) {
+                        $attr[] = $key.'='.$value;
                     }
 
-                    if (!empty($attributeList)) {
-                        $parsedGraph .= sprintf(
-                          "\"%s\" [ %s ];\n",
-                          addslashes(stripslashes($node)),
-                          implode(',', $attributeList)
-                        );
+                    if (strlen($cluster['title'])) {
+                        $attr[] = 'label='
+                                  .$this->_escape($cluster['title'], true);
+                    }
+
+                    if ($attr) {
+                        $parsedGraph .= $indent.'graph [ '.implode(',', $attr)
+                                        ." ];\n";
                     }
                 }
-
-                if ($group != 'default') {
-                  $parsedGraph .= "}\n";
-                }
             }
-        }
 
-        if (isset($this->graph['edges'])) {
-            foreach($this->graph['edges'] as $label => $node) {
-                unset($attributeList);
+            foreach ($nodes as $node => $attributes) {
+                $parsedGraph .= $indent.$this->_escape($node);
 
-                $from = key($node);
-                $to   = $node[$from];
+                $attributeList = array();
 
-                foreach($this->graph['edgeAttributes'][$label] as $key => $value) {
-                    $attributeList[] = $key . '="' . $value . '"';
+                foreach ($this->_escapeArray($attributes) as $key => $value) {
+                    $attributeList[] = $key.'='.$value;
                 }
 
-                $parsedGraph .= sprintf(
-                  '"%s" -> "%s"',
-                  addslashes(stripslashes($from)),
-                  addslashes(stripslashes($to))
-                );
-                
                 if (!empty($attributeList)) {
-                    $parsedGraph .= sprintf(
-                      ' [ %s ]',
-                      implode(',', $attributeList)
-                    );
+                    $parsedGraph .= ' [ '.implode(',', $attributeList).' ]';
                 }
 
                 $parsedGraph .= ";\n";
+            }
+
+            if ($group != 'default') {
+                $indent = substr($indent, 0, -4);
+                $parsedGraph .= $indent."}\n";
+            }
+        }
+
+        if (!empty($this->graph['directed'])) {
+            $separator = ' -> ';
+        } else {
+            $separator = ' -- ';
+        }
+
+        foreach ($this->graph['edgesFrom'] as $from => $toNodes) {
+            $from = $this->_escape($from);
+
+            foreach ($toNodes as $to => $edges) {
+                $to = $this->_escape($to);
+
+                foreach ($edges as $info) {
+                    $f = $from;
+                    $t = $to;
+
+                    if (array_key_exists('portFrom', $info)) {
+                        $f .= ':'.$this->_escape($info['portFrom']);
+                    }
+
+                    if (array_key_exists('portTo', $info)) {
+                        $t .= ':'.$this->_escape($info['portTo']);
+                    }
+
+                    $parsedGraph .= $indent.$f.$separator.$t;
+
+                    if (!empty($info['attributes'])) {
+                        $attributeList = array();
+
+                        foreach ($this->_escapeArray($info['attributes']) as $key => $value) {
+                            $attributeList[] = $key.'='.$value;
+                        }
+
+                        $parsedGraph .= ' [ '.implode(',', $attributeList).' ]';
+                    }
+
+                    $parsedGraph .= ";\n";
+                }
             }
         }
 
@@ -558,7 +776,7 @@ class Image_GraphViz
             }
         }
 
-        return FALSE;
+        return false;
     }
 }
 
