@@ -1,29 +1,37 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0">
-  <name>Image_GraphViz</name>
-  <summary><![CDATA[Interface to AT&T's GraphViz tools]]></summary>
-  <description><![CDATA[The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&T's GraphViz tools.]]></description>
-  <maintainers>
-    <maintainer>
-      <user>vmg</user>
-      <name>Dr. Volker Göbbels</name>
-      <email>vmg@arachnion.de</email>
-    </maintainer>
-    <maintainer>
-      <user>sebastian</user>
-      <name>Sebastian Bergmann</name>
-      <email>sb@sebastian-bergmann.de</email>
-    </maintainer>
-  </maintainers>
-  <license>PHP License</license>
-  <release>
-    <version>1.3.0RC1</version>
-    <date>2007-11-19</date>
-    <state>beta</state>
-    <notes>
-<![CDATA[
-- PEAR Coding Standard fixes:
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.6.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Image_GraphViz</name>
+ <channel>pear.php.net</channel>
+ <summary>Interface to AT&amp;T&apos;s GraphViz tools</summary>
+ <description>The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&amp;T&apos;s GraphViz tools.
+ </description>
+ <lead>
+  <name>Dr. Volker Goebbels</name>
+  <user>vmg</user>
+  <email>vmg@arachnion.de</email>
+  <active>yes</active>
+ </lead>
+ <lead>
+  <name>Sebastian Bergmann</name>
+  <user>sebastian</user>
+  <email>sb@sebastian-bergmann.de</email>
+  <active>yes</active>
+ </lead>
+ <date>2007-11-19</date>
+ <time>08:08:19</time>
+ <version>
+  <release>1.3.0RC1</release>
+  <api>1.3.0RC1</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>- PEAR Coding Standard fixes:
   + TRUE vs true, FALSE vs false,
   + @return docblock
   + Missing docblocks
@@ -35,141 +43,219 @@
 - Support for multiline values
 - Support for multiple edges between same nodes (Req #6630)
 - Choice of GraphViz command to use for rendering (Bug #10753)
-- Support for "strict" graphs
+- Support for &quot;strict&quot; graphs
 - Fix for undirected vs. directed graph (Bug #10753)
 - Base binary path (Req #8295)
 - Better error handling (more checking)
 - Nodes in subgraphs
-- Indentation in DOT file
-]]>
-    </notes>
-    <filelist>
-      <dir name="/" baseinstalldir="Image">
-        <file name="GraphViz.php" role="php">
-        <replace type="package-info" from="@package_version@" to="version"/>
-        </file>
-      </dir>
-    </filelist>
+- Indentation in DOT file</notes>
+ <contents>
+  <dir name="/">
+   <file baseinstalldir="Image" name="GraphViz.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>1.2.1</release>
+    <api>1.2.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-05-23</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>no release notes</notes>
   </release>
-  <changelog>
-   <release>
-     <version>1.2.1</version>
-     <date>2006-05-23</date>
-     <state>stable</state>
-    </release>
-    <release>
-      <version>1.2.0</version>
-      <date>2006-05-11</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-+ Added renderDotFile() method that renders an existing DOT file.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>1.1.0</version>
-      <date>2005-01-19</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-+ Added fetch() method that returns the generated image.
+  <release>
+   <version>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-05-11</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>+ Added renderDotFile() method that renders an existing DOT file.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2005-01-19</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>+ Added fetch() method that returns the generated image.
 
 + Added support for named graphs.
 
 + Added support for cluster attributes.
 
 * Fixed a bug with graph attributes.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>1.0.3</version>
-      <date>2004-02-25</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-* Fixed bugs #109 and #852.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>1.0.2</version>
-      <date>2004-02-20</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-* Fixed Content-Type header for SVG images.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0.3</release>
+    <api>1.0.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-02-25</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Fixed bugs #109 and #852.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0.2</release>
+    <api>1.0.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-02-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Fixed Content-Type header for SVG images.
 
 * Improved temporary file creation by using System::mktemp() instead of tempnam().
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>1.0.1</version>
-      <date>2002-12-11</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-+ Nodes can be grouped now by passing a group name as 3rd parameter to the addNode() method.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0.1</release>
+    <api>1.0.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2002-12-11</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>+ Nodes can be grouped now by passing a group name as 3rd parameter to the addNode() method.
 
 + The new addCluster() method can be used to give a label to a group of nodes and let GraphViz treat it as a node cluster.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>1.0</version>
-      <date>2002-12-08</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-* Added some missing newline characters in GraphViz markup.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>0.4</version>
-      <date>2002-11-24</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-* Send correct Content-Type in image() header depending on generated format.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0</release>
+    <api>1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2002-12-08</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Added some missing newline characters in GraphViz markup.
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.4</release>
+    <api>0.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2002-11-24</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Send correct Content-Type in image() header depending on generated format.
 
 * Renamed methods to conform with PEAR standard.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>0.3</version>
-      <date>2002-09-25</date>
-      <state>stable</state>
-      <notes>
-<![CDATA[
-* Allow for edges without attributes. (Patch by Carsten Saathoff <kodemaniak@gmx.de>)
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>0.2</version>
-      <date>2002-04-06</date>
-      <notes>
-<![CDATA[
-* Added escaping of node descriptions. (Patch by Garvin Hicking <hicking@faktor-e.de>)
 
-* Improved compatibility with Win32 version of dot/neato. (Patch by Garvin Hicking <hicking@faktor-e.de>)
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.3</release>
+    <api>0.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2002-09-25</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Allow for edges without attributes. (Patch by Carsten Saathoff &lt;kodemaniak@gmx.de&gt;)
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.2</release>
+    <api>0.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2002-04-06</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>* Added escaping of node descriptions. (Patch by Garvin Hicking &lt;hicking@faktor-e.de&gt;)
+
+* Improved compatibility with Win32 version of dot/neato. (Patch by Garvin Hicking &lt;hicking@faktor-e.de&gt;)
 
 * Changed Image_GraphViz.php to Image/GraphViz.php.
-]]>
-      </notes>
-    </release>
-    <release>
-      <version>0.1</version>
-      <date>2001-12-01</date>
-      <notes>
-<![CDATA[
-First release.
-]]>
-      </notes>
-    </release>
-  </changelog>
+
+      
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.1</release>
+    <api>0.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2001-12-01</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>First release.
+
+      
+   </notes>
+  </release>
+ </changelog>
 </package>
