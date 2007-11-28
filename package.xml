@@ -9,29 +9,86 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <description>The GraphViz class allows for the creation of and the work with directed and undirected graphs and their visualization with AT&amp;T&apos;s GraphViz tools.
  </description>
  <lead>
+  <name>Philippe Jausions</name>
+  <user>jausions</user>
+  <email>jausions@php.net</email>
+  <active>yes</active>
+ </lead>
+ <lead>
   <name>Dr. Volker Goebbels</name>
   <user>vmg</user>
   <email>vmg@arachnion.de</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
  <lead>
   <name>Sebastian Bergmann</name>
   <user>sebastian</user>
   <email>sb@sebastian-bergmann.de</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
- <date>2007-11-19</date>
- <time>08:08:19</time>
+ <date>2007-11-27</date>
+ <time>16:45:30</time>
  <version>
-  <release>1.3.0RC1</release>
-  <api>1.3.0RC1</api>
+  <release>1.3.0RC2</release>
+  <api>1.3.0RC2</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>- PEAR Coding Standard fixes:
+ <notes>
+ - Fixes memory usage (Req #8380)
+ - Added MIME types
+ - Fixes a filesystem cache issue
+ - Added .phpt unit tests
+ </notes>
+ <contents>
+  <dir name="/">
+   <file baseinstalldir="Image" name="GraphViz.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <dir name="tests">
+    <file name="test1.phpt" role="test" />
+    <file name="test2.phpt" role="test" />
+    <file name="test3.phpt" role="test" />
+    <file name="test4.phpt" role="test" />
+    <file name="test5.phpt" role="test" />
+    <file name="test6.phpt" role="test" />
+    <file name="test9.phpt" role="test" />
+    <file name="test12.phpt" role="test" />
+    <file name="test14.phpt" role="test" />
+    <file name="test16.phpt" role="test" />
+    <file name="test17.phpt" role="test" />
+    <file name="test19.phpt" role="test" />
+    <file name="test20.phpt" role="test" />
+   </dir> <!-- /tests -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <date>2007-11-19</date>
+   <version>
+    <release>1.3.0RC1</release>
+    <api>1.3.0RC1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>- PEAR Coding Standard fixes:
   + TRUE vs true, FALSE vs false,
   + @return docblock
   + Missing docblocks
@@ -48,26 +105,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Base binary path (Req #8295)
 - Better error handling (more checking)
 - Nodes in subgraphs
-- Indentation in DOT file</notes>
- <contents>
-  <dir name="/">
-   <file baseinstalldir="Image" name="GraphViz.php" role="php">
-    <tasks:replace from="@package_version@" to="version" type="package-info" />
-   </file>
-  </dir> <!-- / -->
- </contents>
- <dependencies>
-  <required>
-   <php>
-    <min>4.0.0</min>
-   </php>
-   <pearinstaller>
-    <min>1.4.0b1</min>
-   </pearinstaller>
-  </required>
- </dependencies>
- <phprelease />
- <changelog>
+- Indentation in DOT file
+   </notes>
+  </release>
   <release>
    <version>
     <release>1.2.1</release>
@@ -94,7 +134,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>+ Added renderDotFile() method that renders an existing DOT file.
 
-      
+
    </notes>
   </release>
   <release>
@@ -116,7 +156,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
 * Fixed a bug with graph attributes.
 
-      
+
    </notes>
   </release>
   <release>
@@ -132,7 +172,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>* Fixed bugs #109 and #852.
 
-      
+
    </notes>
   </release>
   <release>
@@ -150,7 +190,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
 * Improved temporary file creation by using System::mktemp() instead of tempnam().
 
-      
+
    </notes>
   </release>
   <release>
@@ -168,7 +208,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
 + The new addCluster() method can be used to give a label to a group of nodes and let GraphViz treat it as a node cluster.
 
-      
+
    </notes>
   </release>
   <release>
@@ -184,7 +224,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>* Added some missing newline characters in GraphViz markup.
 
-      
+
    </notes>
   </release>
   <release>
@@ -202,7 +242,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
 * Renamed methods to conform with PEAR standard.
 
-      
+
    </notes>
   </release>
   <release>
@@ -218,7 +258,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>* Allow for edges without attributes. (Patch by Carsten Saathoff &lt;kodemaniak@gmx.de&gt;)
 
-      
+
    </notes>
   </release>
   <release>
@@ -238,7 +278,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
 * Changed Image_GraphViz.php to Image/GraphViz.php.
 
-      
+
    </notes>
   </release>
   <release>
@@ -254,7 +294,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>First release.
 
-      
+
    </notes>
   </release>
  </changelog>

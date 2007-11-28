@@ -20,7 +20,7 @@
  * @author     Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author     Michael Lively Jr. <mlively@ft11.net>
  * @author     Philippe Jausions <Philippe.Jausions@11abacus.com>
- * @copyright  2001-2007 Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright  2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Image_GraphViz
@@ -146,8 +146,8 @@ class Image_GraphViz
     /**
      * Constructor.
      *
-     * Setting the name of the Graph is useful for including multiple image maps on
-     * one page. If not set, the graph will be named 'G'.
+     * Setting the name of the Graph is useful for including multiple image maps
+     * on one page. If not set, the graph will be named 'G'.
      *
      * @param  boolean $directed Directed (TRUE) or undirected (FALSE) graph.
      * Note: You MUST pass a boolean, and not just an expression that evaluates
@@ -169,53 +169,99 @@ class Image_GraphViz
     }
 
     /**
-     * Output image of the graph in a given format.
+     * Outputs image of the graph in a given format
+     *
+     * This methods send HTTP headers
      *
      * @param  string  Format of the output image.
      *                 This may be one of the formats supported by GraphViz.
      * @param  string  $command "dot" or "neato"
      *
+     * @return boolean TRUE on success, FALSE otherwise
      * @access public
      */
     function image($format = 'svg', $command = null)
     {
-        if ($data = $this->fetch($format, $command)) {
-            $sendContentLengthHeader = true;
-
-            switch ($format) {
-                case 'gif':
-                case 'png':
-                case 'wbmp':
-                    header('Content-Type: image/' . $format);
-                    break;
-
-                case 'jpg':
-                case 'jpeg':
-                    header('Content-Type: image/jpeg');
-                    break;
-
-                case 'pdf':
-                    header('Content-Type: application/pdf');
-                    break;
-
-                case 'svg':
-                    header('Content-Type: image/svg+xml');
-                    break;
-
-                default:
-                    $sendContentLengthHeader = false;
-            }
-
-            if ($sendContentLengthHeader) {
-                header('Content-Length: ' . strlen($data));
-            }
-
-            echo $data;
+        $file = $this->saveParsedGraph();
+        if (!$file) {
+            return false;
         }
+
+        $outputfile = $file . '.' . $format;
+
+        $rendered = $this->renderDotFile($file, $outputfile, $format, $command);
+        if ($rendered !== true) {
+            return $rendered;
+        }
+
+        $sendContentLengthHeader = true;
+
+        switch (strtolower($format)) {
+            case 'gif':
+            case 'png':
+            case 'bmp':
+            case 'jpeg':
+            case 'tiff':
+                header('Content-Type: image/' . $format);
+                break;
+
+            case 'tif':
+                header('Content-Type: image/tiff');
+                break;
+
+            case 'jpg':
+                header('Content-Type: image/jpeg');
+                break;
+
+            case 'ico':
+                header('Content-Type: image/x-icon');
+                break;
+
+            case 'wbmp':
+                header('Content-Type: image/vnd.wap.wbmp');
+                break;
+
+            case 'pdf':
+                header('Content-Type: application/pdf');
+                break;
+
+            case 'mif':
+                header('Content-Type: application/vnd.mif');
+                break;
+
+            case 'vrml':
+                header('Content-Type: application/x-vrml');
+                break;
+
+            case 'svg':
+                header('Content-Type: image/svg+xml');
+                break;
+
+            case 'plain':
+            case 'plain-ext':
+                header('Content-Type: text/plain');
+                break;
+
+            default:
+                header('Content-Type: application/octet-stream');
+                $sendContentLengthHeader = false;
+        }
+
+        if ($sendContentLengthHeader) {
+            header('Content-Length: ' . filesize($outputfile));
+        }
+
+        $return = true;
+        if (readfile($outputfile) === false) {
+            $return = false;
+        }
+        @unlink($outputfile);
+
+        return $return;
     }
 
     /**
-     * Return image (data) of the graph in a given format.
+     * Returns image (data) of the graph in a given format.
      *
      * @param  string  Format of the output image.
      *                 This may be one of the formats supported by GraphViz.
@@ -234,20 +280,11 @@ class Image_GraphViz
 
         $outputfile = $file . '.' . $format;
 
-        switch ($command) {
-            case 'dot':
-            case 'neato':
-                break;
-            default:
-                $command = $this->graph['directed'] ? 'dot' : 'neato';
+        $rendered = $this->renderDotFile($file, $outputfile, $format, $command);
+        if ($rendered !== true) {
+            return $rendered;
         }
 
-        $command = $this->binPath . (($command == 'dot')
-                                   ? $this->dotCommand : $this->neatoCommand);
-        $command .= ' -T'.escapeshellarg($format).' -o'
-                    .escapeshellarg($outputfile).' '.escapeshellarg($file);
-
-        @`$command`;
         @unlink($file);
 
         $fp = fopen($outputfile, 'rb');
@@ -264,7 +301,7 @@ class Image_GraphViz
     }
 
     /**
-     * Render a given dot file into another format.
+     * Renders a given dot file into a given format.
      *
      * @param string The absolute path of the dot file to use.
      * @param string The absolute path of the file to save to.
@@ -272,7 +309,7 @@ class Image_GraphViz
      *               This may be one of the formats supported by GraphViz.
      * @param  string  $command "dot" or "neato"
      *
-     * @return bool  True if the file was saved, false otherwise.
+     * @return boolean  TRUE if the file was saved, FALSE otherwise.
      * @access public
      */
     function renderDotFile($dotfile, $outputfile, $format = 'svg',
@@ -297,6 +334,7 @@ class Image_GraphViz
                         .' '.escapeshellarg($dotfile);
             @`$command`;
 
+            clearstatcache();
             if (file_exists($outputfile) && filemtime($outputfile) > $oldmtime) {
                 return true;
             }
@@ -306,7 +344,7 @@ class Image_GraphViz
     }
 
     /**
-     * Add a cluster to the graph.
+     * Adds a cluster to the graph.
      *
      * @param  string  ID.
      * @param  array   Title.
@@ -322,7 +360,7 @@ class Image_GraphViz
     }
 
     /**
-     * Add a note to the graph.
+     * Adds a note to the graph.
      *
      * @param  string  Name of the node.
      * @param  array   Attributes of the node.
@@ -337,7 +375,7 @@ class Image_GraphViz
     }
 
     /**
-     * Remove a node from the graph.
+     * Removes a node from the graph.
      *
      * This method doesn't remove edges associated with the node.
      *
@@ -354,7 +392,7 @@ class Image_GraphViz
     }
 
     /**
-     * Add an edge to the graph.
+     * Adds an edge to the graph.
      *
      * Examples:
      * <code>
@@ -418,7 +456,7 @@ class Image_GraphViz
     }
 
     /**
-     * Remove an edge from the graph.
+     * Removes an edge from the graph.
      *
      * @param  array Start and End node of the edge to be removed.
      * @param  integer $id specific edge ID (only usefull when multiple edges
@@ -450,7 +488,7 @@ class Image_GraphViz
     }
 
     /**
-     * Add attributes to the graph.
+     * Adds attributes to the graph.
      *
      * @param  array Attributes to be added to the graph.
      *
@@ -468,7 +506,7 @@ class Image_GraphViz
     }
 
     /**
-     * Set attributes of the graph.
+     * Sets attributes of the graph.
      *
      * @param  array Attributes to be set for the graph.
      *
@@ -554,7 +592,7 @@ class Image_GraphViz
     }
 
     /**
-     * Set directed/undirected flag for the graph.
+     * Sets directed/undirected flag for the graph.
      *
      * Note: You MUST pass a boolean, and not just an expression that evaluates
      *       to TRUE or FALSE (i.e. NULL, empty string, 0 will not work)
@@ -572,7 +610,7 @@ class Image_GraphViz
     }
 
     /**
-     * Load graph from file.
+     * Loads a graph from a file in Image_GraphViz format
      *
      * @param  string  File to load graph from.
      *
@@ -616,7 +654,7 @@ class Image_GraphViz
     }
 
     /**
-     * Save graph to file.
+     * Save graph to file in Image_GraphViz format
      *
      * @param  string  File to save the graph to.
      * @return mixed   File the graph was saved to, FALSE on failure.
@@ -641,7 +679,7 @@ class Image_GraphViz
     }
 
     /**
-     * Parse the graph into GraphViz markup.
+     * Parses the graph into GraphViz markup.
      *
      * @return string  GraphViz markup
      * @access public
@@ -752,7 +790,7 @@ class Image_GraphViz
     }
 
     /**
-     * Save GraphViz markup to file.
+     * Saves GraphViz markup to file (in DOT language)
      *
      * @param  string  File to write the GraphViz markup to.
      * @return mixed   File to which the GraphViz markup was
@@ -768,7 +806,7 @@ class Image_GraphViz
                 $file = System::mktemp('graph_');
             }
 
-            if ($fp = @fopen($file, 'w')) {
+            if ($fp = @fopen($file, 'wb')) {
                 @fputs($fp, $parsedGraph);
                 @fclose($fp);
 
