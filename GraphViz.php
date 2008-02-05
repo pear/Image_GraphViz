@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -120,21 +121,21 @@ class Image_GraphViz
     /**
      * Path to GraphViz/dot command
      *
-     * @var  string
+     * @var string
      */
     var $dotCommand = 'dot';
 
     /**
      * Path to GraphViz/neato command
      *
-     * @var  string
+     * @var string
      */
     var $neatoCommand = 'neato';
 
     /**
      * Representation of the graph
      *
-     * @var  array
+     * @var array
      */
     var $graph = array('edgesFrom'  => array(),
                        'nodes'      => array(),
@@ -146,30 +147,42 @@ class Image_GraphViz
                       );
 
     /**
+     * Whether to return PEAR_Error instance on failures instead of FALSE
+     *
+     * @var boolean
+     * @access protected
+     */
+    var $_returnFalseOnError = true;
+
+    /**
      * Constructor.
      *
      * Setting the name of the Graph is useful for including multiple image
      * maps on one page. If not set, the graph will be named 'G'.
      *
-     * @param boolean $directed   Directed (TRUE) or undirected (FALSE) graph.
-     *                            Note: You MUST pass a boolean, and not just
-     *                            an  expression that evaluates to TRUE or
-     *                            FALSE (i.e. NULL, empty string, 0 will NOT
-     *                            work)
-     * @param array   $attributes Attributes of the graph
-     * @param string  $name       Name of the Graph
-     * @param boolean $strict     Whether to collapse multiple edges between
-     *                            same nodes
+     * @param boolean $directed    Directed (TRUE) or undirected (FALSE) graph.
+     *                             Note: You MUST pass a boolean, and not just
+     *                             an  expression that evaluates to TRUE or
+     *                             FALSE (i.e. NULL, empty string, 0 will NOT
+     *                             work)
+     * @param array   $attributes  Attributes of the graph
+     * @param string  $name        Name of the Graph
+     * @param boolean $strict      Whether to collapse multiple edges between
+     *                             same nodes
+     * @param boolean $returnError Set to TRUE to return PEAR_Error instances
+     *                             on failures instead of FALSE
      *
      * @access public
      */
     function Image_GraphViz($directed = true, $attributes = array(),
-                            $name = 'G', $strict = true)
+                            $name = 'G', $strict = true, $returnError = false)
     {
         $this->setDirected($directed);
         $this->setAttributes($attributes);
         $this->graph['name']   = $name;
         $this->graph['strict'] = (boolean)$strict;
+
+        $this->_returnFalseOnError = !$returnError;
     }
 
     /**
@@ -177,23 +190,24 @@ class Image_GraphViz
      *
      * This methods send HTTP headers
      *
-     * @param string $format  Format of the output image. This may be one of
-     *                        the formats supported by GraphViz.
+     * @param string $format  Format of the output image. This may be one
+     *                        of the formats supported by GraphViz.
      * @param string $command "dot" or "neato"
      *
-     * @return boolean TRUE on success, FALSE otherwise
+     * @return boolean TRUE on success, FALSE or PEAR_Error otherwise
      * @access public
      */
     function image($format = 'svg', $command = null)
     {
         $file = $this->saveParsedGraph();
-        if (!$file) {
-            return false;
+        if (!$file || PEAR::isError($file)) {
+            return $file;
         }
 
         $outputfile = $file . '.' . $format;
 
-        $rendered = $this->renderDotFile($file, $outputfile, $format, $command);
+        $rendered = $this->renderDotFile($file, $outputfile, $format,
+                                         $command);
         if ($rendered !== true) {
             return $rendered;
         }
@@ -267,19 +281,20 @@ class Image_GraphViz
     /**
      * Returns image (data) of the graph in a given format.
      *
-     * @param string $format  Format of the output image. This may be one of
-     *                        the formats supported by GraphViz.
+     * @param string $format  Format of the output image. This may be one
+     *                        of the formats supported by GraphViz.
      * @param string $command "dot" or "neato"
      *
-     * @return string The image (data) created by GraphViz or FALSE on error
+     * @return string The image (data) created by GraphViz, FALSE or PEAR_Error
+     *                on error
      * @access public
      * @since  Method available since Release 1.1.0
      */
     function fetch($format = 'svg', $command = null)
     {
         $file = $this->saveParsedGraph();
-        if (!$file) {
-            return false;
+        if (!$file || PEAR::isError($file)) {
+            return $file;
         }
 
         $outputfile = $file . '.' . $format;
@@ -295,7 +310,11 @@ class Image_GraphViz
         $fp = fopen($outputfile, 'rb');
 
         if (!$fp) {
-            return false;
+            if ($this->_returnFalseOnError) {
+                return false;
+            }
+            $error = PEAR::raiseError('Could not read rendered file');
+            return $error;
         }
 
         $data = fread($fp, filesize($outputfile));
@@ -314,14 +333,19 @@ class Image_GraphViz
      *                           of the formats supported by GraphViz.
      * @param string $command    "dot" or "neato"
      *
-     * @return boolean TRUE if the file was saved, FALSE otherwise.
+     * @return boolean TRUE if the file was saved, FALSE or PEAR_Error
+     *                 otherwise.
      * @access public
      */
     function renderDotFile($dotfile, $outputfile, $format = 'svg',
                            $command = null)
     {
         if (!file_exists($dotfile)) {
-            return false;
+            if ($this->_returnFalseOnError) {
+                return false;
+            }
+            $error = PEAR::raiseError('Could not find dot file');
+            return $error;
         }
 
         $oldmtime = file_exists($outputfile) ? filemtime($outputfile) : 0;
@@ -333,19 +357,27 @@ class Image_GraphViz
         default:
             $command = $this->graph['directed'] ? 'dot' : 'neato';
         }
+        $command_orig = $command;
 
-        $command = $this->binPath . (($command == 'dot')
-                                   ? $this->dotCommand
-                                   : $this->neatoCommand);
+        $command = $this->binPath.(($command == 'dot') ? $this->dotCommand
+                                                       : $this->neatoCommand);
 
         $command .= ' -T'.escapeshellarg($format)
                     .' -o'.escapeshellarg($outputfile)
-                    .' '.escapeshellarg($dotfile);
-        @`$command`;
+                    .' '.escapeshellarg($dotfile)
+                    .' 2>&1';
+        exec($command, $msg, $return_val);
 
         clearstatcache();
-        return (file_exists($outputfile)
-                && filemtime($outputfile) > $oldmtime);
+        if (file_exists($outputfile) && filemtime($outputfile) > $oldmtime
+            && $return_val == 0) {
+            return true;
+        } elseif ($this->_returnFalseOnError) {
+            return false;
+        }
+        $error = PEAR::raiseError($command_orig.' command failed: '
+                                  .implode("\n", $msg));
+        return $error;
     }
 
     /**
@@ -657,9 +689,13 @@ class Image_GraphViz
     /**
      * Save graph to file in Image_GraphViz format
      *
+     * This saves the serialized version of the instance, not the
+     * rendered graph.
+     *
      * @param string $file File to save the graph to.
      *
-     * @return mixed File the graph was saved to, FALSE on failure.
+     * @return string File the graph was saved to, FALSE or PEAR_Error on
+     *                failure.
      * @access public
      */
     function save($file = '')
@@ -677,7 +713,11 @@ class Image_GraphViz
             return $file;
         }
 
-        return false;
+        if ($this->_returnFalseOnError) {
+            return false;
+        }
+        $error = PEAR::raiseError('Could not save serialized graph instance');
+        return $error;
     }
 
     /**
@@ -798,8 +838,8 @@ class Image_GraphViz
      *
      * @param string $file File to write the GraphViz markup to.
      *
-     * @return mixed File to which the GraphViz markup was written, FALSE on
-     *               failure.
+     * @return string File to which the GraphViz markup was written, FALSE or
+     *                or PEAR_Error on failure.
      * @access public
      */
     function saveParsedGraph($file = '')
@@ -819,7 +859,11 @@ class Image_GraphViz
             }
         }
 
-        return false;
+        if ($this->_returnFalseOnError) {
+            return false;
+        }
+        $error = PEAR::raiseError('Could not save graph');
+        return $error;
     }
 }
 
