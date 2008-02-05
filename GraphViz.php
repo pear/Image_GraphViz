@@ -4,6 +4,8 @@
 /**
  * Image_GraphViz
  *
+ * PHP version 4 and 5
+ *
  * Copyright (c) 2001-2007, Dr. Volker Göbbels <vmg@arachnion.de> and
  * Sebastian Bergmann <sb@sebastian-bergmann.de>. All rights reserved.
  *
@@ -13,19 +15,19 @@
  * the PHP License and are unable to obtain it through the web, please
  * send a note to license@php.net so we can mail you a copy immediately.
  *
- * @category   Image
- * @package    GraphViz
- * @author     Dr. Volker Göbbels <vmg@arachnion.de>
- * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @author     Karsten Dambekalns <k.dambekalns@fishfarm.de>
- * @author     Michael Lively Jr. <mlively@ft11.net>
- * @author     Philippe Jausions <Philippe.Jausions@11abacus.com>
- * @copyright  2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
- * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    CVS: $Id$
- * @link       http://pear.php.net/package/Image_GraphViz
- * @link       http://www.graphviz.org/
- * @since      File available since Release 0.1
+ * @category  Image
+ * @package   GraphViz
+ * @author    Dr. Volker Göbbels <vmg@arachnion.de>
+ * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
+ * @author    Michael Lively Jr. <mlively@ft11.net>
+ * @author    Philippe Jausions <Philippe.Jausions@11abacus.com>
+ * @copyright 2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @license   http://www.php.net/license/3_0.txt  PHP License 3.0
+ * @version   CVS: $Id$
+ * @link      http://pear.php.net/package/Image_GraphViz
+ * @link      http://www.graphviz.org/
+ * @since     File available since Release 0.1.0
  */
 
 /**
@@ -99,7 +101,7 @@ require_once 'System.php';
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
  * @author    Michael Lively Jr. <mlively@ft11.net>
  * @author    Philippe Jausions <Philippe.Jausions@11abacus.com>
- * @copyright Copyright &copy; 2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
+ * @copyright 2001-2007 Dr. Volker Göbbels <vmg@arachnion.de> and Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license   http://www.php.net/license/3_0.txt The PHP License, Version 3.0
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Image_GraphViz
@@ -146,16 +148,18 @@ class Image_GraphViz
     /**
      * Constructor.
      *
-     * Setting the name of the Graph is useful for including multiple image maps
-     * on one page. If not set, the graph will be named 'G'.
+     * Setting the name of the Graph is useful for including multiple image
+     * maps on one page. If not set, the graph will be named 'G'.
      *
-     * @param  boolean $directed Directed (TRUE) or undirected (FALSE) graph.
-     * Note: You MUST pass a boolean, and not just an expression that evaluates
-     *       to TRUE or FALSE (i.e. NULL, empty string, 0 will not work)
-     * @param  array   $attributes Attributes of the graph
-     * @param  string  $name Name of the Graph
-     * @param  boolean $strict whether to collapse multiple edges between
-     *                         same nodes
+     * @param boolean $directed   Directed (TRUE) or undirected (FALSE) graph.
+     *                            Note: You MUST pass a boolean, and not just
+     *                            an  expression that evaluates to TRUE or
+     *                            FALSE (i.e. NULL, empty string, 0 will NOT
+     *                            work)
+     * @param array   $attributes Attributes of the graph
+     * @param string  $name       Name of the Graph
+     * @param boolean $strict     Whether to collapse multiple edges between
+     *                            same nodes
      *
      * @access public
      */
@@ -164,7 +168,7 @@ class Image_GraphViz
     {
         $this->setDirected($directed);
         $this->setAttributes($attributes);
-        $this->graph['name'] = $name;
+        $this->graph['name']   = $name;
         $this->graph['strict'] = (boolean)$strict;
     }
 
@@ -173,9 +177,9 @@ class Image_GraphViz
      *
      * This methods send HTTP headers
      *
-     * @param  string  Format of the output image.
-     *                 This may be one of the formats supported by GraphViz.
-     * @param  string  $command "dot" or "neato"
+     * @param string $format  Format of the output image. This may be one of
+     *                        the formats supported by GraphViz.
+     * @param string $command "dot" or "neato"
      *
      * @return boolean TRUE on success, FALSE otherwise
      * @access public
@@ -197,54 +201,54 @@ class Image_GraphViz
         $sendContentLengthHeader = true;
 
         switch (strtolower($format)) {
-            case 'gif':
-            case 'png':
-            case 'bmp':
-            case 'jpeg':
-            case 'tiff':
-                header('Content-Type: image/' . $format);
-                break;
+        case 'gif':
+        case 'png':
+        case 'bmp':
+        case 'jpeg':
+        case 'tiff':
+            header('Content-Type: image/' . $format);
+            break;
 
-            case 'tif':
-                header('Content-Type: image/tiff');
-                break;
+        case 'tif':
+            header('Content-Type: image/tiff');
+            break;
 
-            case 'jpg':
-                header('Content-Type: image/jpeg');
-                break;
+        case 'jpg':
+            header('Content-Type: image/jpeg');
+            break;
 
-            case 'ico':
-                header('Content-Type: image/x-icon');
-                break;
+        case 'ico':
+            header('Content-Type: image/x-icon');
+            break;
 
-            case 'wbmp':
-                header('Content-Type: image/vnd.wap.wbmp');
-                break;
+        case 'wbmp':
+            header('Content-Type: image/vnd.wap.wbmp');
+            break;
 
-            case 'pdf':
-                header('Content-Type: application/pdf');
-                break;
+        case 'pdf':
+            header('Content-Type: application/pdf');
+            break;
 
-            case 'mif':
-                header('Content-Type: application/vnd.mif');
-                break;
+        case 'mif':
+            header('Content-Type: application/vnd.mif');
+            break;
 
-            case 'vrml':
-                header('Content-Type: application/x-vrml');
-                break;
+        case 'vrml':
+            header('Content-Type: application/x-vrml');
+            break;
 
-            case 'svg':
-                header('Content-Type: image/svg+xml');
-                break;
+        case 'svg':
+            header('Content-Type: image/svg+xml');
+            break;
 
-            case 'plain':
-            case 'plain-ext':
-                header('Content-Type: text/plain');
-                break;
+        case 'plain':
+        case 'plain-ext':
+            header('Content-Type: text/plain');
+            break;
 
-            default:
-                header('Content-Type: application/octet-stream');
-                $sendContentLengthHeader = false;
+        default:
+            header('Content-Type: application/octet-stream');
+            $sendContentLengthHeader = false;
         }
 
         if ($sendContentLengthHeader) {
@@ -263,11 +267,11 @@ class Image_GraphViz
     /**
      * Returns image (data) of the graph in a given format.
      *
-     * @param  string  Format of the output image.
-     *                 This may be one of the formats supported by GraphViz.
-     * @param  string  $command "dot" or "neato"
+     * @param string $format  Format of the output image. This may be one of
+     *                        the formats supported by GraphViz.
+     * @param string $command "dot" or "neato"
      *
-     * @return string  The image (data) created by GraphViz or FALSE on error
+     * @return string The image (data) created by GraphViz or FALSE on error
      * @access public
      * @since  Method available since Release 1.1.0
      */
@@ -280,7 +284,8 @@ class Image_GraphViz
 
         $outputfile = $file . '.' . $format;
 
-        $rendered = $this->renderDotFile($file, $outputfile, $format, $command);
+        $rendered = $this->renderDotFile($file, $outputfile, $format,
+                                         $command);
         if ($rendered !== true) {
             return $rendered;
         }
@@ -303,68 +308,68 @@ class Image_GraphViz
     /**
      * Renders a given dot file into a given format.
      *
-     * @param string The absolute path of the dot file to use.
-     * @param string The absolute path of the file to save to.
-     * @param string Format of the output image.
-     *               This may be one of the formats supported by GraphViz.
-     * @param  string  $command "dot" or "neato"
+     * @param string $dotfile    The absolute path of the dot file to use.
+     * @param string $outputfile The absolute path of the file to save to.
+     * @param string $format     Format of the output image. This may be one
+     *                           of the formats supported by GraphViz.
+     * @param string $command    "dot" or "neato"
      *
-     * @return boolean  TRUE if the file was saved, FALSE otherwise.
+     * @return boolean TRUE if the file was saved, FALSE otherwise.
      * @access public
      */
     function renderDotFile($dotfile, $outputfile, $format = 'svg',
                            $command = null)
     {
-        if (file_exists($dotfile)) {
-            $oldmtime = file_exists($outputfile) ? filemtime($outputfile) : 0;
-
-            switch ($command) {
-                case 'dot':
-                case 'neato':
-                    break;
-                default:
-                    $command = $this->graph['directed'] ? 'dot' : 'neato';
-            }
-
-            $command = $this->binPath . (($command == 'dot')
-                                       ? $this->dotCommand
-                                       : $this->neatoCommand);
-            $command .= ' -T'.escapeshellarg($format)
-                        .' -o'.escapeshellarg($outputfile)
-                        .' '.escapeshellarg($dotfile);
-            @`$command`;
-
-            clearstatcache();
-            if (file_exists($outputfile) && filemtime($outputfile) > $oldmtime) {
-                return true;
-            }
+        if (!file_exists($dotfile)) {
+            return false;
         }
 
-        return false;
+        $oldmtime = file_exists($outputfile) ? filemtime($outputfile) : 0;
+
+        switch ($command) {
+        case 'dot':
+        case 'neato':
+            break;
+        default:
+            $command = $this->graph['directed'] ? 'dot' : 'neato';
+        }
+
+        $command = $this->binPath . (($command == 'dot')
+                                   ? $this->dotCommand
+                                   : $this->neatoCommand);
+
+        $command .= ' -T'.escapeshellarg($format)
+                    .' -o'.escapeshellarg($outputfile)
+                    .' '.escapeshellarg($dotfile);
+        @`$command`;
+
+        clearstatcache();
+        return (file_exists($outputfile)
+                && filemtime($outputfile) > $oldmtime);
     }
 
     /**
      * Adds a cluster to the graph.
      *
-     * @param  string  ID.
-     * @param  array   Title.
-     * @param  array   Attributes of the cluster.
+     * @param string $id         ID.
+     * @param array  $title      Title.
+     * @param array  $attributes Attributes of the cluster.
      *
      * @return void
      * @access public
      */
     function addCluster($id, $title, $attributes = array())
     {
-        $this->graph['clusters'][$id]['title'] = $title;
+        $this->graph['clusters'][$id]['title']      = $title;
         $this->graph['clusters'][$id]['attributes'] = $attributes;
     }
 
     /**
      * Adds a note to the graph.
      *
-     * @param  string  Name of the node.
-     * @param  array   Attributes of the node.
-     * @param  string  Group of the node.
+     * @param string $name       Name of the node.
+     * @param array  $attributes Attributes of the node.
+     * @param string $group      Group of the node.
      *
      * @return void
      * @access public
@@ -379,7 +384,8 @@ class Image_GraphViz
      *
      * This method doesn't remove edges associated with the node.
      *
-     * @param  Name of the node to be removed.
+     * @param string $name  Name of the node to be removed.
+     * @param string $group Group of the node.
      *
      * @return void
      * @access public
@@ -409,9 +415,9 @@ class Image_GraphViz
      *                                                    'node8' => 'portD'));
      * </code>
      *
-     * @param  array Start => End node of the edge.
-     * @param  array Attributes of the edge.
-     * @param  array $ports Start node => port, End node => port
+     * @param array $edge       Start => End node of the edge.
+     * @param array $attributes Attributes of the edge.
+     * @param array $ports      Start node => port, End node => port
      *
      * @return integer an edge ID that can be used with {@link removeEdge()}
      * @access public
@@ -444,9 +450,7 @@ class Image_GraphViz
             if (!isset($this->graph['edgesFrom'][$from][$to][0])) {
                 $this->graph['edgesFrom'][$from][$to][0] = $info;
             } else {
-                $this->graph['edgesFrom'][$from][$to][0] = array_merge(
-                  $this->graph['edgesFrom'][$from][$to][0], $info
-                );
+                $this->graph['edgesFrom'][$from][$to][0] = array_merge($this->graph['edgesFrom'][$from][$to][0], $info);
             }
         } else {
             $this->graph['edgesFrom'][$from][$to][] = $info;
@@ -458,9 +462,9 @@ class Image_GraphViz
     /**
      * Removes an edge from the graph.
      *
-     * @param  array Start and End node of the edge to be removed.
-     * @param  integer $id specific edge ID (only usefull when multiple edges
-     *                     exist between the same 2 nodes)
+     * @param array   $edge Start and End node of the edge to be removed.
+     * @param integer $id   specific edge ID (only usefull when multiple edges
+     *                      exist between the same 2 nodes)
      *
      * @return void
      * @access public
@@ -490,7 +494,7 @@ class Image_GraphViz
     /**
      * Adds attributes to the graph.
      *
-     * @param  array Attributes to be added to the graph.
+     * @param array $attributes Attributes to be added to the graph.
      *
      * @return void
      * @access public
@@ -498,17 +502,14 @@ class Image_GraphViz
     function addAttributes($attributes)
     {
         if (is_array($attributes)) {
-            $this->graph['attributes'] = array_merge(
-              $this->graph['attributes'],
-              $attributes
-            );
+            $this->graph['attributes'] = array_merge($this->graph['attributes'], $attributes);
         }
     }
 
     /**
      * Sets attributes of the graph.
      *
-     * @param  array Attributes to be set for the graph.
+     * @param array $attributes Attributes to be set for the graph.
      *
      * @return void
      * @access public
@@ -525,7 +526,7 @@ class Image_GraphViz
      *
      * Detects if an attribute is <html>, contains double-quotes, etc...
      *
-     * @param array $input
+     * @param array $input input to escape
      *
      * @return array input escaped
      * @access protected
@@ -536,14 +537,14 @@ class Image_GraphViz
 
         foreach ((array)$input as $k => $v) {
             switch ($k) {
-                case 'label':
-                case 'headlabel':
-                case 'taillabel':
-                    $v = $this->_escape($v, true);
-                    break;
-                default:
-                    $v = $this->_escape($v);
-                    $k = $this->_escape($k);
+            case 'label':
+            case 'headlabel':
+            case 'taillabel':
+                $v = $this->_escape($v, true);
+                break;
+            default:
+                $v = $this->_escape($v);
+                $k = $this->_escape($k);
             }
 
             $output[$k] = $v;
@@ -555,8 +556,8 @@ class Image_GraphViz
     /**
      * Returns a safe "ID" in DOT syntax
      *
-     * @param string $input string to use as "ID"
-     * @param boolean $html whether to attempt detecting HTML-like content
+     * @param string  $input string to use as "ID"
+     * @param boolean $html  whether to attempt detecting HTML-like content
      *
      * @return string
      * @access protected
@@ -564,13 +565,13 @@ class Image_GraphViz
     function _escape($input, $html = false)
     {
         switch (strtolower($input)) {
-            case 'node':
-            case 'edge':
-            case 'graph':
-            case 'digraph':
-            case 'subgraph':
-            case 'strict':
-                return '"'.$input.'"';
+        case 'node':
+        case 'edge':
+        case 'graph':
+        case 'digraph':
+        case 'subgraph':
+        case 'strict':
+            return '"'.$input.'"';
         }
 
         if (is_bool($input)) {
@@ -597,7 +598,7 @@ class Image_GraphViz
      * Note: You MUST pass a boolean, and not just an expression that evaluates
      *       to TRUE or FALSE (i.e. NULL, empty string, 0 will not work)
      *
-     * @param  boolean Directed (TRUE) or undirected (FALSE) graph.
+     * @param boolean $directed Directed (TRUE) or undirected (FALSE) graph.
      *
      * @return void
      * @access public
@@ -612,7 +613,7 @@ class Image_GraphViz
     /**
      * Loads a graph from a file in Image_GraphViz format
      *
-     * @param  string  File to load graph from.
+     * @param string $file File to load graph from.
      *
      * @return void
      * @access public
@@ -656,8 +657,9 @@ class Image_GraphViz
     /**
      * Save graph to file in Image_GraphViz format
      *
-     * @param  string  File to save the graph to.
-     * @return mixed   File the graph was saved to, FALSE on failure.
+     * @param string $file File to save the graph to.
+     *
+     * @return mixed File the graph was saved to, FALSE on failure.
      * @access public
      */
     function save($file = '')
@@ -681,12 +683,12 @@ class Image_GraphViz
     /**
      * Parses the graph into GraphViz markup.
      *
-     * @return string  GraphViz markup
+     * @return string GraphViz markup
      * @access public
      */
     function parse()
     {
-        $parsedGraph = (empty($this->graph['strict'])) ? '' : 'strict ';
+        $parsedGraph  = (empty($this->graph['strict'])) ? '' : 'strict ';
         $parsedGraph .= (empty($this->graph['directed'])) ? 'graph ' : 'digraph ';
         $parsedGraph .= $this->_escape($this->graph['name'])." {\n";
 
@@ -701,11 +703,12 @@ class Image_GraphViz
         foreach ($this->graph['nodes'] as $group => $nodes) {
             if ($group != 'default') {
                 $parsedGraph .= $indent.'subgraph '.$this->_escape($group)." {\n";
+
                 $indent .= '    ';
 
                 if (isset($this->graph['clusters'][$group])) {
                     $cluster = $this->graph['clusters'][$group];
-                    $attr = $this->_escapeArray($cluster['attributes']);
+                    $attr    = $this->_escapeArray($cluster['attributes']);
 
                     foreach ($attr as $key => $value) {
                         $attr[] = $key.'='.$value;
@@ -741,6 +744,7 @@ class Image_GraphViz
 
             if ($group != 'default') {
                 $indent = substr($indent, 0, -4);
+
                 $parsedGraph .= $indent."}\n";
             }
         }
@@ -792,9 +796,10 @@ class Image_GraphViz
     /**
      * Saves GraphViz markup to file (in DOT language)
      *
-     * @param  string  File to write the GraphViz markup to.
-     * @return mixed   File to which the GraphViz markup was
-     *                 written, FALSE on failure.
+     * @param string $file File to write the GraphViz markup to.
+     *
+     * @return mixed File to which the GraphViz markup was written, FALSE on
+     *               failure.
      * @access public
      */
     function saveParsedGraph($file = '')
