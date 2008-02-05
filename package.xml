@@ -38,7 +38,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
    <notes>- PEAR Coding Standard fixes:
-- Support for PEAR_Error (Reques #12913)
+- Support for PEAR_Error (Req #12913)
  </notes>
  <contents>
   <dir name="/">
@@ -87,7 +87,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    </stability>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>- PEAR Coding Standard fixes:
-- Support for PEAR_Error (Reques #12913)
+- Support for PEAR_Error (Req #12913)
    </notes>
   </release>
   <release>
