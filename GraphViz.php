@@ -17,7 +17,7 @@
  * send a note to license@php.net so we can mail you a copy immediately.
  *
  * @category  Image
- * @package   GraphViz
+ * @package   Image_GraphViz
  * @author    Dr. Volker Göbbels <vmg@arachnion.de>
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
@@ -96,7 +96,7 @@ require_once 'System.php';
  * </code>
  *
  * @category  Image
- * @package   GraphViz
+ * @package   Image_GraphViz
  * @author    Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @author    Dr. Volker Göbbels <vmg@arachnion.de>
  * @author    Karsten Dambekalns <k.dambekalns@fishfarm.de>
