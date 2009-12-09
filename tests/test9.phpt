@@ -31,7 +31,7 @@ $graph->addEdge(array(1989 => 1990));
 $graph->addEdge(array(1990 => 'future'));
 
 /* program types graph */
-$graph->addCluster('type', '', array('rank' => 'same'));
+$graph->addSubgraph('type', '', array('rank' => 'same'));
 
 $graph->addNode('Software IS', null, 'type');
 $graph->addNode('Configuration Mgt', null, 'type');
@@ -39,18 +39,18 @@ $graph->addNode('Architecture & Libraries', null, 'type');
 $graph->addNode('Process', null, 'type');
 
 /* time graphs */
-$graph->addCluster('past', '', array('rank' => 'same'));
-$graph->addCluster(1978, '', array('rank' => 'same'));
-$graph->addCluster(1980, '', array('rank' => 'same'));
-$graph->addCluster(1982, '', array('rank' => 'same'));
-$graph->addCluster(1983, '', array('rank' => 'same'));
-$graph->addCluster(1985, '', array('rank' => 'same'));
-$graph->addCluster(1986, '', array('rank' => 'same'));
-$graph->addCluster(1987, '', array('rank' => 'same'));
-$graph->addCluster(1988, '', array('rank' => 'same'));
-$graph->addCluster(1989, '', array('rank' => 'same'));
-$graph->addCluster(1990, '', array('rank' => 'same'));
-$graph->addCluster('future', '', array('rank' => 'same'));
+$graph->addSubgraph('past', '', array('rank' => 'same'));
+$graph->addSubgraph(1978, '', array('rank' => 'same'));
+$graph->addSubgraph(1980, '', array('rank' => 'same'));
+$graph->addSubgraph(1982, '', array('rank' => 'same'));
+$graph->addSubgraph(1983, '', array('rank' => 'same'));
+$graph->addSubgraph(1985, '', array('rank' => 'same'));
+$graph->addSubgraph(1986, '', array('rank' => 'same'));
+$graph->addSubgraph(1987, '', array('rank' => 'same'));
+$graph->addSubgraph(1988, '', array('rank' => 'same'));
+$graph->addSubgraph(1989, '', array('rank' => 'same'));
+$graph->addSubgraph(1990, '', array('rank' => 'same'));
+$graph->addSubgraph('future', '', array('rank' => 'same'));
 
 /* programs */
 $graph->addNode('Bourne sh', null, 'past');
@@ -216,14 +216,14 @@ echo $graph->parse();
 digraph asde91 {
     ranksep=0.75;
     subgraph type {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "Software IS";
         "Configuration Mgt";
         "Architecture & Libraries";
         Process;
     }
     subgraph past {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "Bourne sh";
         make;
         SCCS;
@@ -231,36 +231,36 @@ digraph asde91 {
         cron;
     }
     subgraph 1978 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "Reiser cpp";
         Cshell;
     }
     subgraph 1980 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         emacs;
         build;
         vi;
     }
     subgraph 1982 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "<curses>";
         RCS;
         IMX;
         SYNED;
     }
     subgraph 1983 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         ksh;
         IFS;
         TTU;
     }
     subgraph 1985 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         nmake;
         Peggy;
     }
     subgraph 1986 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         ncpp;
         "ksh-i";
         "<curses-i>";
@@ -268,7 +268,7 @@ digraph asde91 {
         "C*";
     }
     subgraph 1987 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "Ansi cpp";
         "nmake 2.0";
         "3D File System";
@@ -277,7 +277,7 @@ digraph asde91 {
         CSAS;
     }
     subgraph 1988 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         CIA;
         SBCS;
         "ksh-88";
@@ -286,7 +286,7 @@ digraph asde91 {
         backtalk;
     }
     subgraph 1989 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "CIA++";
         APP;
         SHIP;
@@ -295,7 +295,7 @@ digraph asde91 {
         Mosaic;
     }
     subgraph 1990 {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         libft;
         CoShell;
         DIA;
@@ -307,7 +307,7 @@ digraph asde91 {
         DOT;
     }
     subgraph future {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         "Adv. Software Technology";
     }
     past -> 1978;

@@ -1,5 +1,5 @@
 --TEST--
-Unit test for nodes and clusters using keyword as name
+Unit test for nodes, subgraphs and clusters using keyword as name
 --FILE--
 <?php
 
@@ -16,8 +16,8 @@ $graph = new Image_GraphViz(true, null, 'strict', true);
 
 $graph->addNode('graph');
 
-$graph->addCluster('subgraph', '');
-$graph->addCluster('digraph', '');
+$graph->addSubgraph('subgraph', '');
+$graph->addSubgraph('digraph', '');
 
 $graph->addNode('node', null, 'subgraph');
 $graph->addNode('edge', null, 'digraph');

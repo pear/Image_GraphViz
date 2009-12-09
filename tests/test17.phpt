@@ -56,22 +56,22 @@ echo $graph->parse();
 ?>
 --EXPECT--
 digraph G {
+    start [ shape=Mdiamond ];
+    end [ shape=Msquare ];
     subgraph cluster0 {
-        graph [ filled,lightgrey,style=filled,color=lightgrey,label="process #1" ];
+        graph [ style=filled,color=lightgrey,label="process #1" ];
         a0;
         a1;
         a2;
         a3;
     }
     subgraph cluster1 {
-        graph [ blue,color=blue,label="process #2" ];
+        graph [ color=blue,label="process #2" ];
         b0;
         b1;
         b2;
         b3;
     }
-    start [ shape=Mdiamond ];
-    end [ shape=Msquare ];
     a0 -> a1;
     a1 -> a2;
     a1 -> b3;

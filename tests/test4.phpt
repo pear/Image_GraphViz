@@ -43,7 +43,7 @@ $graph->addNode('b', array('shape' => 'ellipse',
 $graph->addNode('c', array('shape' => 'plaintext',
                            'label' => 'long line 1<BR/>line 2<BR ALIGN="LEFT"/>line 3<BR ALIGN="RIGHT"/>'), 'subgraph');
 
-$graph->addCluster('subgraph', '', array('rank' => 'same'));
+$graph->addSubgraph('subgraph', '', array('rank' => 'same'));
 
 $graph->addEdge(array('c' => 'b'));
 
@@ -71,7 +71,7 @@ digraph G {
 </TABLE>> ];
     d [ shape=triangle ];
     subgraph "subgraph" {
-        graph [ same,rank=same ];
+        graph [ rank=same ];
         b [ shape=ellipse,style=filled,label=<<TABLE BGCOLOR="bisque">
   <TR><TD COLSPAN="3">elephant</TD>
       <TD ROWSPAN="2" BGCOLOR="chartreuse"

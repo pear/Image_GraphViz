@@ -142,6 +142,7 @@ class Image_GraphViz
                        'attributes' => array(),
                        'directed'   => true,
                        'clusters'   => array(),
+                       'subgraphs'  => array(),
                        'name'       => 'G',
                        'strict'     => true,
                       );
@@ -383,17 +384,40 @@ class Image_GraphViz
     /**
      * Adds a cluster to the graph.
      *
+     * A cluster is a subgraph with a rectangle around it.
+     *
      * @param string $id         ID.
      * @param array  $title      Title.
      * @param array  $attributes Attributes of the cluster.
+     * @param string $group      ID of group to nest cluster into
+     *
+     * @return void
+     * @access public
+     * @see    addSubgraph()
+     */
+    function addCluster($id, $title, $attributes = array(), $group = 'default')
+    {
+        $this->graph['clusters'][$id]['title']      = $title;
+        $this->graph['clusters'][$id]['attributes'] = $attributes;
+        $this->graph['clusters'][$id]['embedIn']    = $group;
+    }
+
+    /**
+     * Adds a subgraph to the graph.
+     *
+     * @param string $id         ID.
+     * @param array  $title      Title.
+     * @param array  $attributes Attributes of the cluster.
+     * @param string $group      ID of group to nest subgraph into
      *
      * @return void
      * @access public
      */
-    function addCluster($id, $title, $attributes = array())
+    function addSubgraph($id, $title, $attributes = array(), $group = 'default')
     {
-        $this->graph['clusters'][$id]['title']      = $title;
-        $this->graph['clusters'][$id]['attributes'] = $attributes;
+        $this->graph['subgraphs'][$id]['title']      = $title;
+        $this->graph['subgraphs'][$id]['attributes'] = $attributes;
+        $this->graph['subgraphs'][$id]['embedIn']    = $group;
     }
 
     /**
@@ -665,6 +689,7 @@ class Image_GraphViz
                               'attributes' => array(),
                               'directed'   => true,
                               'clusters'   => array(),
+                              'subgraphs'  => array(),
                               'name'       => 'G',
                               'strict'     => true,
                         );
@@ -721,6 +746,72 @@ class Image_GraphViz
     }
 
     /**
+     * Returns a list of sub-groups for a given parent group
+     *
+     * @param string $parent Group ID
+     *
+     * @return array list of group IDs
+     * @access protected
+     */
+    function _getSubgraphs($parent)
+    {
+        $subgraphs = array();
+        foreach ($this->graph['clusters'] as $id => $info) {
+            if ($info['embedIn'] === $parent) {
+                $subgraphs[] = $id;
+            }
+        }
+        foreach ($this->graph['subgraphs'] as $id => $info) {
+            if ($info['embedIn'] === $parent) {
+                $subgraphs[] = $id;
+            }
+        }
+        return $subgraphs;
+    }
+
+    /**
+     * Returns a list of cluster/subgraph IDs
+     *
+     * @return array
+     * @access protected
+     */
+    function _getGroups()
+    {
+        $groups = array_merge(array_keys($this->graph['clusters']),
+                              array_keys($this->graph['subgraphs']));
+        return array_unique($groups);
+    }
+
+    /**
+     * Returns a list of top groups
+     *
+     * @return array
+     * @access protected
+     */
+    function _getTopGraphs()
+    {
+        $top = array();
+        $groups = $this->_getGroups();
+
+        foreach ($groups as $id) {
+            $isTop = ($id === 'default');
+            if (isset($this->graph['clusters'][$id])
+                && $this->graph['clusters'][$id]['embedIn'] === 'default') {
+                $isTop = true;
+            }
+            if (isset($this->graph['subgraphs'][$id])
+                && $this->graph['subgraphs'][$id]['embedIn'] === 'default') {
+                $isTop = true;
+            }
+            if ($isTop) {
+                $top[] = $id;
+            }
+        }
+
+        return array_unique($top);
+    }
+
+    /**
      * Parses the graph into GraphViz markup.
      *
      * @return string GraphViz markup
@@ -740,53 +831,15 @@ class Image_GraphViz
             $parsedGraph .= $indent.$key.'='.$value.";\n";
         }
 
+        $groups = $this->_getGroups();
         foreach ($this->graph['nodes'] as $group => $nodes) {
-            if ($group != 'default') {
-                $parsedGraph .= $indent.'subgraph '.$this->_escape($group)." {\n";
-
-                $indent .= '    ';
-
-                if (isset($this->graph['clusters'][$group])) {
-                    $cluster = $this->graph['clusters'][$group];
-                    $attr    = $this->_escapeArray($cluster['attributes']);
-
-                    foreach ($attr as $key => $value) {
-                        $attr[] = $key.'='.$value;
-                    }
-
-                    if (strlen($cluster['title'])) {
-                        $attr[] = 'label='
-                                  .$this->_escape($cluster['title'], true);
-                    }
-
-                    if ($attr) {
-                        $parsedGraph .= $indent.'graph [ '.implode(',', $attr)
-                                        ." ];\n";
-                    }
-                }
+            if (!in_array($group, $groups)) {
+                $parsedGraph .= $this->_nodes($nodes, $indent);
             }
-
-            foreach ($nodes as $node => $attributes) {
-                $parsedGraph .= $indent.$this->_escape($node);
-
-                $attributeList = array();
-
-                foreach ($this->_escapeArray($attributes) as $key => $value) {
-                    $attributeList[] = $key.'='.$value;
-                }
-
-                if (!empty($attributeList)) {
-                    $parsedGraph .= ' [ '.implode(',', $attributeList).' ]';
-                }
-
-                $parsedGraph .= ";\n";
-            }
-
-            if ($group != 'default') {
-                $indent = substr($indent, 0, -4);
-
-                $parsedGraph .= $indent."}\n";
-            }
+        }
+        $tops = $this->_getTopGraphs();
+        foreach ($tops as $group) {
+            $parsedGraph .= $this->_subgraph($group, $indent);
         }
 
         if (!empty($this->graph['directed'])) {
@@ -819,6 +872,14 @@ class Image_GraphViz
                         $attributeList = array();
 
                         foreach ($this->_escapeArray($info['attributes']) as $key => $value) {
+                            switch ($key) {
+                            case 'lhead':
+                            case 'ltail':
+                                if (strncasecmp($value, 'cluster', 7)) {
+                                    $value = 'cluster_'.$value;
+                                }
+                                break;
+                            }
                             $attributeList[] = $key.'='.$value;
                         }
 
@@ -831,6 +892,99 @@ class Image_GraphViz
         }
 
         return $parsedGraph . "}\n";
+    }
+
+    /**
+     * Output nodes
+     *
+     * @param array  $nodes  nodes list
+     * @param string $indent space indentation
+     *
+     * @return string output
+     * @access protected
+     */
+    function _nodes($nodes, $indent)
+    {
+        $parsedGraph = '';
+        foreach ($nodes as $node => $attributes) {
+            $parsedGraph .= $indent.$this->_escape($node);
+
+            $attributeList = array();
+
+            foreach ($this->_escapeArray($attributes) as $key => $value) {
+                $attributeList[] = $key.'='.$value;
+            }
+
+            if (!empty($attributeList)) {
+                $parsedGraph .= ' [ '.implode(',', $attributeList).' ]';
+            }
+
+            $parsedGraph .= ";\n";
+        }
+        return $parsedGraph;
+    }
+
+    /**
+     * Generates output for a group
+     *
+     * @return string output
+     * @access protected
+     */
+    function _subgraph($group, &$indent)
+    {
+        $parsedGraph = '';
+        $nodes = $this->graph['nodes'][$group];
+
+        if ($group !== 'default') {
+            $type = null;
+            $_group = $this->_escape($group);
+
+            if (isset($this->graph['clusters'][$group])) {
+                $type = 'clusters';
+                if (strncasecmp($group, 'cluster', 7)) {
+                    $_group = $this->_escape('cluster_'.$group);
+                }
+            } elseif (isset($this->graph['subgraphs'][$group])) {
+                $type = 'subgraphs';
+            }
+            $parsedGraph .= $indent.'subgraph '.$_group." {\n";
+
+            $indent .= '    ';
+
+            if ($type !== null && isset($this->graph[$type][$group])) {
+                $cluster = $this->graph[$type][$group];
+                $_attr    = $this->_escapeArray($cluster['attributes']);
+
+                $attr = array();
+                foreach ($_attr as $key => $value) {
+                    $attr[] = $key.'='.$value;
+                }
+
+                if (strlen($cluster['title'])) {
+                    $attr[] = 'label='
+                              .$this->_escape($cluster['title'], true);
+                }
+
+                if ($attr) {
+                    $parsedGraph .= $indent.'graph [ '.implode(',', $attr)
+                                    ." ];\n";
+                }
+            }
+        }
+
+        $parsedGraph .= $this->_nodes($nodes, $indent);
+
+        foreach ($this->_getSubgraphs($group) as $_group) {
+            $parsedGraph .= $this->_subgraph($_group, $indent);
+        }
+
+        if ($group !== 'default') {
+            $indent = substr($indent, 0, -4);
+
+            $parsedGraph .= $indent."}\n";
+        }
+
+        return $parsedGraph;
     }
 
     /**

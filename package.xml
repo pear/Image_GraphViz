@@ -59,7 +59,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file name="test17.phpt" role="test" />
     <file name="test19.phpt" role="test" />
     <file name="test20.phpt" role="test" />
+    <file name="test20b.phpt" role="test" />
     <file name="req_12913.phpt" role="test" />
+    <file name="bug_15019.phpt" role="test" />
+    <file name="bug_15943.phpt" role="test" />
+    <file name="bug_16872.phpt" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
