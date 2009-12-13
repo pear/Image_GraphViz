@@ -26,19 +26,21 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>sb@sebastian-bergmann.de</email>
   <active>no</active>
  </lead>
- <date>2008-02-05</date>
- <time>14:31:14</time>
+ <date>2009-12-13</date>
+ <time>16:26:14</time>
  <version>
-  <release>1.3.0RC3</release>
-  <api>1.3.0RC3</api>
+  <release>1.3.0</release>
+  <api>1.3.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
-   <notes>- PEAR Coding Standard fixes:
-- Support for PEAR_Error (Req #12913)
+   <notes>- Doc-block fix for @package (Bug #16569)
+- Backward compability fix for cluster IDs (Bug #16872)
+- Proper handling of attributes fix (Bug #15019)
+- Nesting of subgraphs (Req #15943)
  </notes>
  <contents>
   <dir name="/">
@@ -73,12 +75,29 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <min>4.0.0</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.6.2</min>
    </pearinstaller>
   </required>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2009-12-13</date>
+   <version>
+    <release>1.3.0</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>- Doc-block fix for @package (Bug #16569)
+- Backward compability fix for cluster IDs (Bug #16872)
+- Proper handling of attributes fix (Bug #15019)
+- Nesting of subgraphs (Req #15943)
+   </notes>
+  </release>
   <release>
    <date>2008-02-05</date>
    <version>
