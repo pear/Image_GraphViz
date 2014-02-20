@@ -1,0 +1,41 @@
+{
+    "authors": [
+        {
+            "email": "jausions@php.net",
+            "name": "Philippe Jausions",
+            "role": "Lead"
+        },
+        {
+            "email": "vmg@arachnion.de",
+            "name": "Dr. Volker Goebbels",
+            "role": "Lead"
+        },
+        {
+            "email": "sb@sebastian-bergmann.de",
+            "name": "Sebastian Bergmann",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Image": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Image_GraphViz",
+    "include-path": [
+        "./"
+    ],
+    "license": "PHP License",
+    "name": "pear/image_graphviz",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Image_GraphViz",
+        "source": "https://github.com/pear/Image_GraphViz"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
