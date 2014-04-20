@@ -387,7 +387,7 @@ class Image_GraphViz
      * A cluster is a subgraph with a rectangle around it.
      *
      * @param string $id         ID.
-     * @param array  $title      Title.
+     * @param string $title      Title.
      * @param array  $attributes Attributes of the cluster.
      * @param string $group      ID of group to nest cluster into
      *
@@ -409,7 +409,7 @@ class Image_GraphViz
      * Adds a subgraph to the graph.
      *
      * @param string $id         ID.
-     * @param array  $title      Title.
+     * @param string $title      Title.
      * @param array  $attributes Attributes of the cluster.
      * @param string $group      ID of group to nest subgraph into
      *
@@ -939,7 +939,10 @@ class Image_GraphViz
     function _subgraph($group, &$indent)
     {
         $parsedGraph = '';
-        $nodes = $this->graph['nodes'][$group];
+        $nodes = null;
+        if (isset($this->graph['nodes'][$group])) {
+            $nodes = $this->graph['nodes'][$group];
+        }
 
         if ($group !== 'default') {
             $type = null;
@@ -978,7 +981,9 @@ class Image_GraphViz
             }
         }
 
-        $parsedGraph .= $this->_nodes($nodes, $indent);
+        if ($nodes) {
+            $parsedGraph .= $this->_nodes($nodes, $indent);
+        }
 
         foreach ($this->_getSubgraphs($group) as $_group) {
             $parsedGraph .= $this->_subgraph($_group, $indent);
