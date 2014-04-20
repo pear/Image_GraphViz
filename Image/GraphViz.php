@@ -911,6 +911,10 @@ class Image_GraphViz
      */
     function _nodes($nodes, $indent)
     {
+        if (!is_array($nodes)) {
+            return '';
+        }
+        
         $parsedGraph = '';
         foreach ($nodes as $node => $attributes) {
             $parsedGraph .= $indent.$this->_escape($node);
