@@ -50,9 +50,9 @@ require_once 'System.php';
  *
  * // Default graph, node, edge attributes
  * $graph->addAttributes(array(
- *			'graph' => array('fontname' => 'Helvetica-Oblique', 'fontsize' => 24, 'label' => 'GraphViz')
- *			, 'node' => array('color' => 'white', 'fontname' => 'Helvetica')
- *			, 'edge' => array('color' => 'red')));
+ *    'graph' => array('fontname' => 'Helvetica-Oblique', 'fontsize' => 24, 'label' => 'GraphViz')
+ *  , 'node' => array('color' => 'white', 'fontname' => 'Helvetica')
+ *  , 'edge' => array('color' => 'red')));
  *
  * $graph->addNode(
  *   'Node1',
@@ -614,13 +614,13 @@ class Image_GraphViz
             case 'node':
             case 'edge':
                 if (!is_array($v)) {
-					$v = $this->_escape($v);
-				}
+                    $v = $this->_escape($v);
+                }
                 break;
             default:
                 if (!is_array($v)) {
-                	$v = $this->_escape($v);
-				}
+                    $v = $this->_escape($v);
+                }
                 $k = $this->_escape($k);
             }
 
@@ -849,16 +849,16 @@ class Image_GraphViz
         $attr = $this->_escapeArray($this->graph['attributes']);
 
         foreach ($attr as $key => $value) {
-			if (is_array($value)) {
-				$subattr = $this->_escapeArray($value);
-				$parsedGraph .= $indent.$key." [\n";
-				foreach ($subattr as $subkey => $subvalue) {
-					$parsedGraph .= $indent.$indent.$subkey.'='.$subvalue.";\n";
-				}
-				$parsedGraph .= $indent."];\n";
-			} else {
-				$parsedGraph .= $indent.$key.'='.$value.";\n";
-			}
+            if (is_array($value)) {
+                $subattr = $this->_escapeArray($value);
+                $parsedGraph .= $indent.$key." [\n";
+                foreach ($subattr as $subkey => $subvalue) {
+                    $parsedGraph .= $indent.$indent.$subkey.'='.$subvalue.";\n";
+                }
+                $parsedGraph .= $indent."];\n";
+            } else {
+                $parsedGraph .= $indent.$key.'='.$value.";\n";
+            }
         }
 
         $groups = $this->_getGroups();
