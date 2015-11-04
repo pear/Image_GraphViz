@@ -207,7 +207,7 @@ class Image_GraphViz
     function image($format = 'svg', $command = null)
     {
         $file = $this->saveParsedGraph();
-        if (!$file || PEAR::isError($file)) {
+        if (!$file || $file instanceof PEAR_Error) {
             return $file;
         }
 
@@ -300,7 +300,7 @@ class Image_GraphViz
     function fetch($format = 'svg', $command = null)
     {
         $file = $this->saveParsedGraph();
-        if (!$file || PEAR::isError($file)) {
+        if (!$file || $file instanceof PEAR_Error) {
             return $file;
         }
 
@@ -320,8 +320,7 @@ class Image_GraphViz
             if ($this->_returnFalseOnError) {
                 return false;
             }
-            $error = PEAR::raiseError('Could not read rendered file');
-            return $error;
+            return new PEAR_Error('Could not read rendered file');
         }
 
         $data = fread($fp, filesize($outputfile));
@@ -351,8 +350,7 @@ class Image_GraphViz
             if ($this->_returnFalseOnError) {
                 return false;
             }
-            $error = PEAR::raiseError('Could not find dot file');
-            return $error;
+            return new PEAR_Error('Could not find dot file');
         }
 
         $oldmtime = file_exists($outputfile) ? filemtime($outputfile) : 0;
@@ -382,9 +380,8 @@ class Image_GraphViz
         } elseif ($this->_returnFalseOnError) {
             return false;
         }
-        $error = PEAR::raiseError($command_orig.' command failed: '
+        return new PEAR_Error($command_orig.' command failed: '
                                   .implode("\n", $msg));
-        return $error;
     }
 
     /**
@@ -1041,7 +1038,7 @@ class Image_GraphViz
 
         if (!empty($parsedGraph)) {
             if (empty($file)) {
-                $file = System::mktemp('graph_');
+                $file = tempnam(sys_get_temp_dir(), 'graph_');
             }
 
             if ($fp = @fopen($file, 'wb')) {
@@ -1055,8 +1052,7 @@ class Image_GraphViz
         if ($this->_returnFalseOnError) {
             return false;
         }
-        $error = PEAR::raiseError('Could not save graph');
-        return $error;
+        return new PEAR_Error('Could not save graph');
     }
 }
 

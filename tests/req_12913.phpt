@@ -18,7 +18,8 @@ $graph = new Image_GraphViz(true, array(), 'G', true, true);
 $graph->addNode('Node1', array('label' => 'Node1'), 'cluster_1');
 
 $result = $graph->image('unavailable_format');
-if (PEAR::isError($result)) {
+
+if ($result instanceof PEAR_Error) {
     echo "PEAR_Error\n";
 }
 
