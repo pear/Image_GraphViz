@@ -32,11 +32,6 @@
  */
 
 /**
- * Required PEAR classes
- */
-require_once 'System.php';
-
-/**
  * Interface to AT&T's GraphViz tools.
  *
  * The GraphViz class allows for the creation of and to work with directed
@@ -746,7 +741,7 @@ class Image_GraphViz
         $serializedGraph = serialize($this->graph);
 
         if (empty($file)) {
-            $file = System::mktemp('graph_');
+            $file = tempnam(sys_get_temp_dir(), 'graph_');
         }
 
         if ($fp = @fopen($file, 'wb')) {
